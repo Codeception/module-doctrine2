@@ -92,7 +92,8 @@ class Doctrine2Test extends Unit
             $this->em->getClassMetadata(\EntityWithUuid::class),
         ]);
 
-        $this->module = new Doctrine2(make_container(), [
+        $container = \Codeception\Util\Stub::make('Codeception\Lib\ModuleContainer');
+        $this->module = new Doctrine2($container, [
             'connection_callback' => function () {
                 return $this->em;
             },

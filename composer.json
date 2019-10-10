@@ -1,0 +1,35 @@
+{
+    "name":"codeception/module-doctrine2",
+    "description":"Doctrine2 module for Codeception",
+    "keywords":["codeception", "doctrine2"],
+    "homepage":"http://codeception.com/",
+    "type":"library",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Michael Bodnarchuk"
+        },
+        {
+            "name":"Alex Kunin"
+        }
+    ],
+    "minimum-stability": "RC",
+
+    "require": {
+        "php": ">=5.6.0 <8.0",
+        "codeception/codeception": "4.0.x-dev | ^4.0"
+    },
+    "require-dev": {
+        "codeception/util-robohelpers": "dev-master",
+        "doctrine/orm": "^2",
+        "doctrine/annotations": "^1",
+        "doctrine/data-fixtures": "^1",
+        "ramsey/uuid-doctrine": "^1.5"
+    },
+    "autoload":{
+        "classmap": ["src/"]
+    },
+    "config": {
+        "classmap-authoritative": true
+    }
+}
