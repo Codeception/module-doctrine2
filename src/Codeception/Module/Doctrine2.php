@@ -73,7 +73,7 @@ use function var_export;
  *             part: SERVICES
  *         - Doctrine2:
  *             depends: Symfony
- * ``
+ * ```
  *
  * You cannot use `cleanup: true` in an acceptance test, since Codeception and your app (i.e. browser) are using two
  * different connections to the database, so Codeception can't wrap changes made by the app into a transaction.
