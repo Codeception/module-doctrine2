@@ -73,7 +73,7 @@ use function var_export;
  *             part: SERVICES
  *         - Doctrine2:
  *             depends: Symfony
- * ``
+ * ```
  *
  * You cannot use `cleanup: true` in an acceptance test, since Codeception and your app (i.e. browser) are using two
  * different connections to the database, so Codeception can't wrap changes made by the app into a transaction.
@@ -93,10 +93,11 @@ use function var_export;
  * ## Note on parameters
  *
  * Every method that expects some parameters to be checked against values in the database (`see...()`,
- * `dontSee...()`, `grab...()`) can accept instance of \Doctrine\Common\Collections\Criteria for more
- * flexibility, e.g.:
+ * `dontSee...()`, `grab...()`) can accept instance of
+ * [\Doctrine\Common\Collections\Criteria](https://www.doctrine-project.org/api/collections/latest/Doctrine/Common/Collections/Criteria.html)
+ * for more flexibility, e.g.:
  *
- * ``` php
+ * ```php
  * $I->seeInRepository('User', [
  *     'name' => 'John',
  *     Criteria::create()->where(
@@ -107,16 +108,16 @@ use function var_export;
  *
  * If criteria is just a `->where(...)` construct, you can pass just expression without criteria wrapper:
  *
- * ``` php
+ * ```php
  * $I->seeInRepository('User', [
  *     'name' => 'John',
  *     Criteria::expr()->endsWith('email', '@domain.com'),
  * ]);
  * ```
  *
- * Criteria can be used not only to filter data, but also to change order of results:
+ * Criteria can be used not only to filter data, but also to change the order of results:
  *
- * ``` php
+ * ```php
  * $I->grabEntitiesFromRepository('User', [
  *     'status' => 'active',
  *     Criteria::create()->orderBy(['name' => 'asc']),
