@@ -437,19 +437,19 @@ EOF;
     }
 
     /**
-     * Persists record into repository.
+     * Persists a record into the repository.
      * This method creates an entity, and sets its properties directly (via reflection).
-     * Setters of entity won't be executed, but you can create almost any entity and save it to database.
+     * Setters of the entity won't be executed, but you can create almost any entity and save it to the database.
      * If the entity has a constructor, for optional parameters the default value will be used and for non-optional parameters the given fields (with a matching name) will be passed when calling the constructor before the properties get set directly (via reflection).
      *
-     * Returns primary key of newly created entity. Primary key value is extracted using Reflection API.
-     * If primary key is composite, array of values is returned.
+     * Returns the primary key of the newly created entity. The primary key value is extracted using Reflection API.
+     * If the primary key is composite, an array of values is returned.
      *
      * ```php
      * $I->haveInRepository('Entity\User', array('name' => 'davert'));
      * ```
      *
-     * This method also accepts instances as first argument, which is useful when entity constructor
+     * This method also accepts instances as first argument, which is useful when the entity constructor
      * has some arguments:
      *
      * ```php
@@ -462,8 +462,9 @@ EOF;
      * $I->haveInRepository('Entity\User', array('arg' => $arg, 'name' => 'davert'));
      * ```
      *
-     * If entity has relations, they can be populated too. In case of OneToMany the following format
-     * ie expected:
+     * If the entity has relations, they can be populated too. In case of
+     * [OneToMany](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-bidirectional)
+     * the following format is expected:
      *
      * ```php
      * $I->haveInRepository('Entity\User', array(
@@ -479,7 +480,8 @@ EOF;
      * ));
      * ```
      *
-     * For ManyToOne format is slightly different:
+     * For [ManyToOne](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#many-to-one-unidirectional)
+     * the format is slightly different:
      *
      * ```php
      * $I->haveInRepository('Entity\User', array(
@@ -492,7 +494,7 @@ EOF;
      *
      * This works recursively, so you can create deep structures in a single call.
      *
-     * Note that both `$em->persist(...)`, $em->refresh(...), and `$em->flush()` are called every time.
+     * Note that `$em->persist()`, `$em->refresh()`, and `$em->flush()` are called every time.
      *
      * @param string|object $classNameOrInstance
      * @param array $data
