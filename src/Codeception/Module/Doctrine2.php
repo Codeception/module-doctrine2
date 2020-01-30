@@ -35,10 +35,10 @@ use function var_export;
 /**
  * Access the database using [Doctrine2 ORM](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/).
  *
- * When used with Zend Framework 2 or Symfony2, Doctrine's Entity Manager is automatically retrieved from Service Locator.
+ * When used with Symfony or Zend Framework 2, Doctrine's Entity Manager is automatically retrieved from Service Locator.
  * Set up your `functional.suite.yml` like this:
  *
- * ```
+ * ```yaml
  * modules:
  *     enabled:
  *         - Symfony # 'ZF2' or 'Symfony'
@@ -49,13 +49,12 @@ use function var_export;
  *
  * If you don't use Symfony or Zend Framework, you need to specify a callback function to retrieve the Entity Manager:
  *
- * ```
+ * ```yaml
  * modules:
  *     enabled:
  *         - Doctrine2:
  *             connection_callback: ['MyDb', 'createEntityManager']
  *             cleanup: true # All doctrine queries will be wrapped in a transaction, which will be rolled back at the end of each test
- *
  * ```
  *
  * This will use static method of `MyDb::createEntityManager()` to establish the Entity Manager.
