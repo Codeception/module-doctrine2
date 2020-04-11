@@ -26,7 +26,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer require "phpunit/phpunit<8" --no-update --ignore-platform-reqs
+        composer require "phpunit/phpunit<=8.5.2" --no-update --ignore-platform-reqs
         composer install --prefer-dist --no-progress --no-interaction --no-suggest
 
     - name: Run test suite
