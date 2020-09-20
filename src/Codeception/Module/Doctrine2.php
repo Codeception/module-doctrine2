@@ -53,11 +53,8 @@ use function var_export;
  * modules:
  *     enabled:
  *         - Doctrine2:
- *             connection_callback: ['MyDb', 'createEntityManager']
- *             cleanup: true # All doctrine queries will be wrapped in a transaction, which will be rolled back at the end of each test
+ *             connection_callback: ['MyDb', 'createEntityManager'] # Call the static method `MyDb::createEntityManager()` to get the Entity Manager
  * ```
- *
- * This will use static method of `MyDb::createEntityManager()` to establish the Entity Manager.
  *
  * By default, the module will wrap everything into a transaction for each test and roll it back afterwards
  * (this is controlled by the `cleanup` setting).
@@ -97,7 +94,7 @@ use function var_export;
  * for more flexibility, e.g.:
  *
  * ```php
- * $I->seeInRepository('User', [
+ * $I->seeInRepository(User::class, [
  *     'name' => 'John',
  *     Criteria::create()->where(
  *         Criteria::expr()->endsWith('email', '@domain.com')
@@ -108,7 +105,7 @@ use function var_export;
  * If criteria is just a `->where(...)` construct, you can pass just expression without criteria wrapper:
  *
  * ```php
- * $I->seeInRepository('User', [
+ * $I->seeInRepository(User::class, [
  *     'name' => 'John',
  *     Criteria::expr()->endsWith('email', '@domain.com'),
  * ]);
@@ -340,7 +337,7 @@ EOF;
     }
 
     /**
-     * This method is deprecated in favor of `haveInRepository()`. It's functionality is exactly the same.
+     * This method is deprecated in favor of `haveInRepository()`. Its functionality is exactly the same.
      */
     public function persistEntity($obj, $values = [])
     {
@@ -359,7 +356,7 @@ EOF;
      * ``` php
      * <?php
      *
-     * $I->haveFakeRepository('Entity\User', array('findByUsername' => function($username) {  return null; }));
+     * $I->haveFakeRepository(User::class, ['findByUsername' => function($username) { return null; }]);
      *
      * ```
      *
@@ -445,20 +442,20 @@ EOF;
      * If the primary key is composite, an array of values is returned.
      *
      * ```php
-     * $I->haveInRepository('Entity\User', array('name' => 'davert'));
+     * $I->haveInRepository(User::class, ['name' => 'davert']);
      * ```
      *
      * This method also accepts instances as first argument, which is useful when the entity constructor
      * has some arguments:
      *
      * ```php
-     * $I->haveInRepository(new User($arg), array('name' => 'davert'));
+     * $I->haveInRepository(new User($arg), ['name' => 'davert']);
      * ```
      *
      * Alternatively, constructor arguments can be passed by name. Given User constructor signature is `__constructor($arg)`, the example above could be rewritten like this:
      *
      * ```php
-     * $I->haveInRepository('Entity\User', array('arg' => $arg, 'name' => 'davert'));
+     * $I->haveInRepository(User::class, ['arg' => $arg, 'name' => 'davert']);
      * ```
      *
      * If the entity has relations, they can be populated too. In case of
@@ -466,29 +463,25 @@ EOF;
      * the following format is expected:
      *
      * ```php
-     * $I->haveInRepository('Entity\User', array(
+     * $I->haveInRepository(User::class, [
      *     'name' => 'davert',
-     *     'posts' => array(
-     *         array(
-     *             'title' => 'Post 1',
-     *         ),
-     *         array(
-     *             'title' => 'Post 2',
-     *         ),
-     *     ),
-     * ));
+     *     'posts' => [
+     *         ['title' => 'Post 1'],
+     *         ['title' => 'Post 2'],
+     *     ],
+     * ]);
      * ```
      *
      * For [ManyToOne](https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#many-to-one-unidirectional)
      * the format is slightly different:
      *
      * ```php
-     * $I->haveInRepository('Entity\User', array(
+     * $I->haveInRepository(User::class, [
      *     'name' => 'davert',
-     *     'post' => array(
+     *     'post' => [
      *         'title' => 'Post 1',
-     *     ),
-     * ));
+     *     ],
+     * ]);
      * ```
      *
      * This works recursively, so you can create deep structures in a single call.
@@ -838,9 +831,9 @@ EOF;
      *
      * ``` php
      * <?php
-     * $I->seeInRepository('AppBundle:User', array('name' => 'davert'));
-     * $I->seeInRepository('User', array('name' => 'davert', 'Company' => array('name' => 'Codegyre')));
-     * $I->seeInRepository('Client', array('User' => array('Company' => array('name' => 'Codegyre')));
+     * $I->seeInRepository(User::class, ['name' => 'davert']);
+     * $I->seeInRepository(User::class, ['name' => 'davert', 'Company' => ['name' => 'Codegyre']]);
+     * $I->seeInRepository(Client::class, ['User' => ['Company' => ['name' => 'Codegyre']]]);
      * ?>
      * ```
      *
@@ -889,7 +882,7 @@ EOF;
      *
      * ``` php
      * <?php
-     * $email = $I->grabFromRepository('User', 'email', array('name' => 'davert'));
+     * $email = $I->grabFromRepository(User::class, 'email', ['name' => 'davert']);
      * ?>
      * ```
      *
@@ -920,13 +913,13 @@ EOF;
      *
      * ``` php
      * <?php
-     * $users = $I->grabEntitiesFromRepository('AppBundle:User', array('name' => 'davert'));
+     * $users = $I->grabEntitiesFromRepository(User::class, ['name' => 'davert']);
      * ?>
      * ```
      *
      * @version 1.1
      * @param $entity
-     * @param array $params. For `IS NULL`, use `array('field'=>null)`
+     * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return array
      */
     public function grabEntitiesFromRepository($entity, $params = [])
@@ -951,13 +944,13 @@ EOF;
      *
      * ``` php
      * <?php
-     * $user = $I->grabEntityFromRepository('User', array('id' => '1234'));
+     * $user = $I->grabEntityFromRepository(User::class, ['id' => '1234']);
      * ?>
      * ```
      *
      * @version 1.1
      * @param $entity
-     * @param array $params. For `IS NULL`, use `array('field'=>null)`
+     * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return object
      */
     public function grabEntityFromRepository($entity, $params = [])
