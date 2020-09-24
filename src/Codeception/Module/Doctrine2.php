@@ -77,6 +77,14 @@ use function var_export;
  * You cannot use `cleanup: true` in an acceptance test, since Codeception and your app (i.e. browser) are using two
  * different connections to the database, so Codeception can't wrap changes made by the app into a transaction.
  *
+ * Change purge mode doctrine fixtures:
+ * ```yaml
+ * modules:
+ *     enabled:
+ *         - Doctrine2:
+ *             purge_mode: 1 //1 - DELETE, 2 - TRUNCATE, default DELETE
+ * ```
+ *
  * ## Status
  *
  * * Maintainer: **davert**
@@ -132,7 +140,8 @@ class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
     protected $config = [
         'cleanup' => true,
         'connection_callback' => false,
-        'depends' => null
+        'depends' => null,
+        'purge_mode' => ORMPurger::PURGE_MODE_DELETE,
     ];
 
     protected $dependencyMessage = <<<EOF
@@ -783,6 +792,7 @@ EOF;
 
         try {
             $purger = new ORMPurger($this->em);
+            $purger->setPurgeMode($this->config['purge_mode']);
             $executor = new ORMExecutor($this->em, $purger);
             $executor->execute($loader->getFixtures(), $append);
         } catch (Exception $e) {
