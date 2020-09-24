@@ -2,7 +2,7 @@
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 
-if (class_exists('Doctrine\Persistence\ObjectManager')) {
+if (version_compare(PHP_VERSION, '5.6', '<=')) {
     class TestFixture1 implements FixtureInterface
     {
         public function load(Doctrine\Persistence\ObjectManager $manager)
@@ -13,7 +13,7 @@ if (class_exists('Doctrine\Persistence\ObjectManager')) {
             $manager->flush();
         }
     }
-} elseif (class_exists('Doctrine\Common\Persistence\ObjectManager')) {
+} else {
     class TestFixture1 implements FixtureInterface
     {
         public function load(Doctrine\Common\Persistence\ObjectManager $manager)
