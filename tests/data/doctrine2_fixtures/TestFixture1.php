@@ -1,7 +1,7 @@
 <?php
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class TestFixture1 implements FixtureInterface
 {
