@@ -2,7 +2,7 @@
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 
-if (version_compare(PHP_VERSION, '7.1', '<')) {
+if (version_compare(PHP_VERSION, '7.1', '>')) {
     class TestFixture2 implements FixtureInterface
     {
         public function load(Doctrine\Persistence\ObjectManager $manager)
