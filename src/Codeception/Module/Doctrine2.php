@@ -1072,7 +1072,7 @@ EOF;
                 $this->em->getClassMetadata(get_class($pk));
             } catch (\Doctrine\ORM\Mapping\MappingException $ex) {
                 $isEntity = false;
-            } catch (\Doctrine\Common\Persistence\Mapping\MappingException $ex) {
+            } catch (\Doctrine\Persistence\Mapping\MappingException $ex) {
                 $isEntity = false;
             }
         }
