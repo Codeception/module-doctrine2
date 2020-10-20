@@ -1067,6 +1067,8 @@ EOF;
                 $isEntity = false;
             } catch (\Doctrine\Common\Persistence\Mapping\MappingException $ex) {
                 $isEntity = false;
+            } catch (\Doctrine\Persistence\Mapping\MappingException $ex) {
+                $isEntity = false;
             }
         }
 
