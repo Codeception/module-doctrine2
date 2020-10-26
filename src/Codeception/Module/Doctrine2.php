@@ -74,7 +74,7 @@ use function var_export;
  * You cannot use `cleanup: true` in an acceptance test, since Codeception and your app (i.e. browser) are using two
  * different connections to the database, so Codeception can't wrap changes made by the app into a transaction.
  *
- * Change purge mode doctrine fixtures:
+ * Change purge mode of doctrine fixtures:
  * ```yaml
  * modules:
  *     enabled:
