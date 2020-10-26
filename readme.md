@@ -10,4 +10,4 @@ composer require --dev "codeception/module-doctrine2"
 
 ## Documentation
 
-<a href="documentation.md">Look at documentation.md file</a>
+<a href="https://codeception.com/docs/modules/Doctrine2">Module documentation</a>

@@ -19,7 +19,6 @@
         "codeception/codeception": "^4.0"
     },
     "require-dev": {
-        "codeception/util-robohelpers": "dev-master",
         "doctrine/orm": "^2",
         "doctrine/annotations": "^1",
         "doctrine/data-fixtures": "^1",
