@@ -683,7 +683,7 @@ EOF;
      * $I->loadFixtures(AppFixtures::class, false);
      * ```
      *
-     * Note: this method requires `doctrine/data-fixtures` package to be installed.
+     * This method requires [`doctrine/data-fixtures`](https://github.com/doctrine/data-fixtures) to be installed.
      *
      * @param string|string[]|object[] $fixtures
      * @param bool $append
