@@ -138,7 +138,7 @@ class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
         'cleanup' => true,
         'connection_callback' => false,
         'depends' => null,
-        'purge_mode' => ORMPurger::PURGE_MODE_DELETE,
+        'purge_mode' => 1, // ORMPurger::PURGE_MODE_DELETE
     ];
 
     protected $dependencyMessage = <<<EOF
