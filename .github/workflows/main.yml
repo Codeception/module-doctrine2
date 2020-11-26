@@ -24,8 +24,13 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
+    - name: Install dependencies on PHP 7
+      if: matrix.php < 8
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Install dependencies on PHP 8
+      if: matrix.php == 8
+      run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-req=php
 
     - name: Run test suite
       run: php vendor/bin/codecept run
