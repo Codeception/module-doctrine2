@@ -43,11 +43,11 @@ use function var_export;
  *     enabled:
  *         - Symfony # 'ZF2' or 'Symfony'
  *         - Doctrine2:
- *             depends: Symfony
+ *             depends: Symfony # Tells Doctrine to fetch the Entity Manager through Symfony
  *             cleanup: true # All doctrine queries will be wrapped in a transaction, which will be rolled back at the end of each test
  * ```
  *
- * If you don't use Symfony or Zend Framework, you need to specify a callback function to retrieve the Entity Manager:
+ * If you don't provide a `depends` key, you need to specify a callback function to retrieve the Entity Manager:
  *
  * ```yaml
  * modules:
@@ -79,7 +79,7 @@ use function var_export;
  * modules:
  *     enabled:
  *         - Doctrine2:
- *             purge_mode: 1 //1 - DELETE, 2 - TRUNCATE, default DELETE
+ *             purge_mode: 1 # 1 = DELETE, 2 = TRUNCATE, default DELETE
  * ```
  *
  * ## Status
