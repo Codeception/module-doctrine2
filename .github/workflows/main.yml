@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0]
+        php: [7.1, 7.2, 7.3, 7.4, 8.0]
 
     steps:
     - name: Checkout code
@@ -24,13 +24,8 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Install dependencies on PHP 7
-      if: matrix.php < 8
+    - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-interaction
-
-    - name: Install dependencies on PHP 8
-      if: matrix.php == 8
-      run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-req=php
 
     - name: Run test suite
       run: php vendor/bin/codecept run

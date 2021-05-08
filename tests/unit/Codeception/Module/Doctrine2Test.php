@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Codeception\Exception\ModuleException;
 use Codeception\Module\Doctrine2;
 use Codeception\Test\Unit;
@@ -12,7 +14,7 @@ use Doctrine\ORM\Tools\Setup;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
 
-class Doctrine2Test extends Unit
+final class Doctrine2Test extends Unit
 {
     /**
      * @var EntityManager
