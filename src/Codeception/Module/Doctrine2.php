@@ -365,14 +365,14 @@ EOF;
      * This creates a stub class for Entity\User repository with redefined method findByUsername,
      * which will always return the NULL value.
      *
-     * @param $classname
+     * @param string $className
      * @param array $methods
      */
-    public function haveFakeRepository($classname, array $methods = []): void
+    public function haveFakeRepository(string $className, array $methods = []): void
     {
         $em = $this->em;
 
-        $metadata = $em->getMetadataFactory()->getMetadataFor($classname);
+        $metadata = $em->getMetadataFactory()->getMetadataFor($className);
         $customRepositoryClassName = $metadata->customRepositoryClassName;
 
         if (!$customRepositoryClassName) {
@@ -400,7 +400,7 @@ EOF;
 
             $property = $reflectedEm->getProperty('repositories');
             $property->setAccessible(true);
-            $property->setValue($em, array_merge($property->getValue($em), [$classname => $mock]));
+            $property->setValue($em, array_merge($property->getValue($em), [$className => $mock]));
         } elseif ($reflectedEm->hasProperty('repositoryFactory')) {
             //For doctrine 2.4.0+ versions
 
@@ -416,7 +416,7 @@ EOF;
 
                 $repositoryListProperty->setValue(
                     $repositoryFactory,
-                    [$classname => $mock]
+                    [$className => $mock]
                 );
 
                 $repositoryFactoryProperty->setValue($em, $repositoryFactory);
