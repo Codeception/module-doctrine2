@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Codeception\Module;
 
 use Codeception\Exception\ModuleConfigException;
@@ -8,7 +10,6 @@ use Codeception\Exception\ModuleRequireException;
 use Codeception\Lib\Interfaces\DataMapper;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Lib\Interfaces\DoctrineProvider;
-use Codeception\Lib\Notification;
 use Codeception\Module as CodeceptionModule;
 use Codeception\TestInterface;
 use Codeception\Util\ReflectionPropertyAccessor;
@@ -164,7 +165,7 @@ EOF;
     public $em = null;
 
     /**
-     * @var \Codeception\Lib\Interfaces\DoctrineProvider
+     * @var DoctrineProvider
      */
     private $dependentModule;
 
@@ -305,7 +306,7 @@ EOF;
     /**
      * Performs $em->flush();
      */
-    public function flushToDatabase()
+    public function flushToDatabase(): void
     {
         $this->em->flush();
     }
@@ -323,7 +324,7 @@ EOF;
      *
      * @param object|object[] $entities
      */
-    public function refreshEntities($entities)
+    public function refreshEntities($entities): void
     {
         if (!is_array($entities)) {
             $entities = [$entities];
@@ -341,18 +342,9 @@ EOF;
      * $I->clearEntityManager();
      * ```
      */
-    public function clearEntityManager()
+    public function clearEntityManager(): void
     {
         $this->em->clear();
-    }
-
-    /**
-     * This method is deprecated in favor of `haveInRepository()`. Its functionality is exactly the same.
-     */
-    public function persistEntity($obj, $values = [])
-    {
-        Notification::deprecate("Doctrine2::persistEntity is deprecated in favor of Doctrine2::haveInRepository");
-        return $this->haveInRepository($obj, $values);
     }
 
     /**
@@ -373,14 +365,14 @@ EOF;
      * This creates a stub class for Entity\User repository with redefined method findByUsername,
      * which will always return the NULL value.
      *
-     * @param $classname
+     * @param string $className
      * @param array $methods
      */
-    public function haveFakeRepository($classname, $methods = [])
+    public function haveFakeRepository(string $className, array $methods = []): void
     {
         $em = $this->em;
 
-        $metadata = $em->getMetadataFactory()->getMetadataFor($classname);
+        $metadata = $em->getMetadataFactory()->getMetadataFor($className);
         $customRepositoryClassName = $metadata->customRepositoryClassName;
 
         if (!$customRepositoryClassName) {
@@ -408,7 +400,7 @@ EOF;
 
             $property = $reflectedEm->getProperty('repositories');
             $property->setAccessible(true);
-            $property->setValue($em, array_merge($property->getValue($em), [$classname => $mock]));
+            $property->setValue($em, array_merge($property->getValue($em), [$className => $mock]));
         } elseif ($reflectedEm->hasProperty('repositoryFactory')) {
             //For doctrine 2.4.0+ versions
 
@@ -424,7 +416,7 @@ EOF;
 
                 $repositoryListProperty->setValue(
                     $repositoryFactory,
-                    [$classname => $mock]
+                    [$className => $mock]
                 );
 
                 $repositoryFactoryProperty->setValue($em, $repositoryFactory);
@@ -537,7 +529,7 @@ EOF;
      * @return object
      * @throws ReflectionException
      */
-    private function instantiateAndPopulateEntity($className, array $data, array &$instances)
+    private function instantiateAndPopulateEntity(string $className, array $data, array &$instances)
     {
         $rpa = new ReflectionPropertyAccessor();
         list($scalars,$relations) = $this->splitScalarsAndRelations($className, $data);
@@ -583,7 +575,7 @@ EOF;
      * @param array $data
      * @return array
      */
-    private function splitScalarsAndRelations($className, array $data)
+    private function splitScalarsAndRelations(string $className, array $data): array
     {
         $scalars = [];
         $relations = [];
@@ -608,7 +600,7 @@ EOF;
      * @param array &$instances
      * @return array
      */
-    private function instantiateRelations($className, $master, array $data, array &$instances)
+    private function instantiateRelations(string $className, $master, array $data, array &$instances): array
     {
         $metadata = $this->em->getClassMetadata($className);
 
@@ -691,11 +683,11 @@ EOF;
      * @throws ModuleException
      * @throws ModuleRequireException
      */
-    public function loadFixtures($fixtures, $append = true)
+    public function loadFixtures($fixtures, bool $append = true): void
     {
-        if (!class_exists(\Doctrine\Common\DataFixtures\Loader::class)
-            || !class_exists(\Doctrine\Common\DataFixtures\Purger\ORMPurger::class)
-            || !class_exists(\Doctrine\Common\DataFixtures\Executor\ORMExecutor::class)) {
+        if (!class_exists(Loader::class)
+            || !class_exists(ORMPurger::class)
+            || !class_exists(ORMExecutor::class)) {
             throw new ModuleRequireException(
                 __CLASS__,
                 'Doctrine fixtures support in unavailable.\n'
@@ -871,11 +863,10 @@ EOF;
         $this->assertNot($res);
     }
 
-    protected function proceedSeeInRepository($entity, $params = [])
+    protected function proceedSeeInRepository($entity, $params = []): array
     {
         // we need to store to database...
         $this->em->flush();
-        $data = $this->em->getClassMetadata($entity);
         $qb = $this->em->getRepository($entity)->createQueryBuilder('s');
         $this->buildAssociationQuery($qb, $entity, 's', $params);
         $this->debug($qb->getDQL());
@@ -907,7 +898,6 @@ EOF;
     {
         // we need to store to database...
         $this->em->flush();
-        $data = $this->em->getClassMetadata($entity);
         $qb = $this->em->getRepository($entity)->createQueryBuilder('s');
         $qb->select('s.' . $field);
         $this->buildAssociationQuery($qb, $entity, 's', $params);
@@ -928,16 +918,15 @@ EOF;
      * ?>
      * ```
      *
-     * @version 1.1
      * @param $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return array
+     * @version 1.1
      */
-    public function grabEntitiesFromRepository($entity, $params = [])
+    public function grabEntitiesFromRepository($entity, array $params = []): array
     {
         // we need to store to database...
         $this->em->flush();
-        $data = $this->em->getClassMetadata($entity);
         $qb = $this->em->getRepository($entity)->createQueryBuilder('s');
         $qb->select('s');
         $this->buildAssociationQuery($qb, $entity, 's', $params);
@@ -959,16 +948,15 @@ EOF;
      * ?>
      * ```
      *
-     * @version 1.1
      * @param $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return object
+     * @version 1.1
      */
-    public function grabEntityFromRepository($entity, $params = [])
+    public function grabEntityFromRepository($entity, array $params = [])
     {
         // we need to store to database...
         $this->em->flush();
-        $data = $this->em->getClassMetadata($entity);
         $qb = $this->em->getRepository($entity)->createQueryBuilder('s');
         $qb->select('s');
         $this->buildAssociationQuery($qb, $entity, 's', $params);
@@ -977,28 +965,13 @@ EOF;
         return $qb->getQuery()->getSingleResult();
     }
 
-    /**
-     * It's Fuckin Recursive!
-     *
-     * @param QueryBuilder $qb
-     * @param string $assoc
-     * @param string $alias
-     * @param array $params
-     */
-    protected function buildAssociationQuery($qb, $assoc, $alias, $params)
+    protected function buildAssociationQuery(QueryBuilder $qb, string $assoc, string $alias, array $params): void
     {
         $paramIndex = 0;
         $this->_buildAssociationQuery($qb, $assoc, $alias, $params, $paramIndex);
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param string $assoc
-     * @param string $alias
-     * @param array $params
-     * @param int &$paramIndex
-     */
-    protected function _buildAssociationQuery($qb, $assoc, $alias, $params, &$paramIndex)
+    protected function _buildAssociationQuery(QueryBuilder $qb, string $assoc, string $alias, array $params, int &$paramIndex)
     {
         $data = $this->em->getClassMetadata($assoc);
         foreach ($params as $key => $val) {
@@ -1038,7 +1011,7 @@ EOF;
      * @param mixed $instance
      * @param mixed $pks
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function debugEntityCreation($instance, $pks)
     {
@@ -1064,10 +1037,9 @@ EOF;
 
     /**
      * @param mixed $pk
-     *
      * @return bool
      */
-    private function isDoctrineEntity($pk)
+    private function isDoctrineEntity($pk): bool
     {
         $isEntity = is_object($pk);
 
