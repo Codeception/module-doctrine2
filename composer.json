@@ -15,16 +15,16 @@
     ],
     "minimum-stability": "RC",
     "require": {
-        "php": "^7.1 || ^8.0",
+        "php": "^7.3 || ^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "codeception/codeception": "^4.0"
+        "codeception/codeception": "^5.0 || *@dev"
     },
     "require-dev": {
-        "doctrine/orm": "^2",
-        "doctrine/annotations": "^1",
-        "doctrine/data-fixtures": "^1",
-        "ramsey/uuid-doctrine": "^1.5"
+        "doctrine/orm": "^2.9",
+        "doctrine/annotations": "^1.13",
+        "doctrine/data-fixtures": "^1.5",
+        "ramsey/uuid-doctrine": "^1.6"
     },
     "autoload": {
         "classmap": [ "src/" ]
