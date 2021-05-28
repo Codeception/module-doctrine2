@@ -24,7 +24,8 @@
         "doctrine/orm": "^2.9",
         "doctrine/annotations": "^1.13",
         "doctrine/data-fixtures": "^1.5",
-        "ramsey/uuid-doctrine": "^1.6"
+        "ramsey/uuid-doctrine": "^1.6",
+        "codeception/stub": "^3.7"
     },
     "autoload": {
         "classmap": [ "src/" ]

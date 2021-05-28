@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Codeception\Exception\ModuleException;
 use Codeception\Module\Doctrine2;
+use Codeception\Stub;
 use Codeception\Test\Unit;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Type;
@@ -94,7 +95,7 @@ final class Doctrine2Test extends Unit
             $this->em->getClassMetadata(\EntityWithUuid::class),
         ]);
 
-        $container = \Codeception\Util\Stub::make('Codeception\Lib\ModuleContainer');
+        $container = Stub::make('Codeception\Lib\ModuleContainer');
         $this->module = new Doctrine2($container, [
             'connection_callback' => function () {
                 return $this->em;
