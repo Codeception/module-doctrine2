@@ -280,7 +280,7 @@ final class Doctrine2Test extends Unit
             return $entity->getName();
         };
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'a',
                 'b',
@@ -291,7 +291,7 @@ final class Doctrine2Test extends Unit
             ]))
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'c',
                 'b',
@@ -386,7 +386,7 @@ final class Doctrine2Test extends Unit
         $primaryKey = $this->module->haveInRepository(NonTypicalPrimaryKeyEntity::class, [
             'primaryKey' => 'abc',
         ]);
-        $this->assertEquals('abc', $primaryKey);
+        $this->assertSame('abc', $primaryKey);
     }
 
     public function testCompositePrimaryKey()
@@ -395,7 +395,7 @@ final class Doctrine2Test extends Unit
             'integerPart' => 123,
             'stringPart' => 'abc',
         ]);
-        $this->assertEquals([123, 'abc'], $res);
+        $this->assertSame([123, 'abc'], $res);
     }
 
     /**
@@ -410,7 +410,7 @@ final class Doctrine2Test extends Unit
 
         $pks = $this->module->haveInRepository($c);
 
-        $this->assertEquals([$a, $b], $pks);
+        $this->assertSame([$a, $b], $pks);
     }
 
     /**
@@ -438,23 +438,23 @@ final class Doctrine2Test extends Unit
         $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ? WHERE id = ?', ['b', $id]);
 
         // Our original entity still has old data:
-        $this->assertEquals('a', $original->getName());
+        $this->assertSame('a', $original->getName());
 
         // Grabbing it again should not work as EntityManager still does not know about external change:
         $grabbed1 = $this->module->grabEntityFromRepository(PlainEntity::class, ['id' => $id]);
         $this->assertSame($original, $grabbed1);
-        $this->assertEquals('a', $grabbed1->getName());
+        $this->assertSame('a', $grabbed1->getName());
 
         // Now we explicitly ask EntityManager invalidate its cache:
         $this->module->refreshEntities($original);
 
         // Without grabbing, entity should be updated:
-        $this->assertEquals('b', $original->getName());
+        $this->assertSame('b', $original->getName());
 
         // Grabbing it again should also work:
         $grabbed2 = $this->module->grabEntityFromRepository(PlainEntity::class, ['id' => $id]);
         $this->assertSame($original, $grabbed2);
-        $this->assertEquals('b', $grabbed2->getName());
+        $this->assertSame('b', $grabbed2->getName());
     }
 
     public function testRefreshingMultipleEntities()
@@ -467,13 +467,13 @@ final class Doctrine2Test extends Unit
 
         $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ?', ['c']);
 
-        $this->assertEquals('a', $a->getName());
-        $this->assertEquals('b', $b->getName());
+        $this->assertSame('a', $a->getName());
+        $this->assertSame('b', $b->getName());
 
         $this->module->refreshEntities([$a, $b]);
 
-        $this->assertEquals('c', $a->getName());
-        $this->assertEquals('c', $b->getName());
+        $this->assertSame('c', $a->getName());
+        $this->assertSame('c', $b->getName());
     }
 
     public function testClear()

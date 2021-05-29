@@ -11,18 +11,21 @@ use Codeception\Lib\Interfaces\DataMapper;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Lib\Interfaces\DoctrineProvider;
 use Codeception\Module as CodeceptionModule;
+use Codeception\Stub;
 use Codeception\TestInterface;
 use Codeception\Util\ReflectionPropertyAccessor;
-use Codeception\Util\Stub;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use InvalidArgumentException;
+use PDOException;
+use ReflectionClass;
 use ReflectionException;
 use function array_merge;
 use function get_class;
@@ -160,7 +163,7 @@ modules:
 EOF;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var EntityManagerInterface
      */
     public $em = null;
 
@@ -169,7 +172,7 @@ EOF;
      */
     private $dependentModule;
 
-    public function _depends()
+    public function _depends(): array
     {
         if ($this->config['connection_callback']) {
             return [];
@@ -198,7 +201,7 @@ EOF;
                         $this->em->getConnection()->rollback();
                     }
                     $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
-                } catch (\PDOException $e) {
+                } catch (PDOException $e) {
                 }
             }
 
@@ -209,14 +212,14 @@ EOF;
 
     public function onReconfigure()
     {
-        if (!$this->em instanceof \Doctrine\ORM\EntityManagerInterface) {
+        if (!$this->em instanceof EntityManagerInterface) {
             return;
         }
         if ($this->config['cleanup'] && $this->em->getConnection()->isTransactionActive()) {
             try {
                 $this->em->getConnection()->rollback();
                 $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
             }
         }
         $this->clean();
@@ -230,7 +233,7 @@ EOF;
                         $this->em->getConnection()->rollback();
                     }
                     $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
-                } catch (\PDOException $e) {
+                } catch (PDOException $e) {
                 }
             }
 
@@ -239,7 +242,7 @@ EOF;
         }
     }
 
-    protected function retrieveEntityManager()
+    protected function retrieveEntityManager(): void
     {
         if ($this->dependentModule) {
             $this->em = $this->dependentModule->_getEntityManager();
@@ -261,7 +264,7 @@ EOF;
         }
 
 
-        if (!($this->em instanceof \Doctrine\ORM\EntityManagerInterface)) {
+        if (!($this->em instanceof EntityManagerInterface)) {
             throw new ModuleConfigException(
                 __CLASS__,
                 "Connection object is not an instance of \\Doctrine\\ORM\\EntityManagerInterface.\n"
@@ -274,7 +277,7 @@ EOF;
 
     public function _after(TestInterface $test)
     {
-        if (!$this->em instanceof \Doctrine\ORM\EntityManagerInterface) {
+        if (!$this->em instanceof EntityManagerInterface) {
             return;
         }
         if ($this->config['cleanup'] && $this->em->getConnection()->isTransactionActive()) {
@@ -283,18 +286,18 @@ EOF;
                     $this->em->getConnection()->rollback();
                 }
                 $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
             }
         }
         $this->clean();
         $this->em->getConnection()->close();
     }
 
-    protected function clean()
+    protected function clean(): void
     {
         $em = $this->em;
 
-        $reflectedEm = new \ReflectionClass($em);
+        $reflectedEm = new ReflectionClass($em);
         if ($reflectedEm->hasProperty('repositories')) {
             $property = $reflectedEm->getProperty('repositories');
             $property->setAccessible(true);
@@ -365,8 +368,6 @@ EOF;
      * This creates a stub class for Entity\User repository with redefined method findByUsername,
      * which will always return the NULL value.
      *
-     * @param string $className
-     * @param array $methods
      */
     public function haveFakeRepository(string $className, array $methods = []): void
     {
@@ -392,7 +393,7 @@ EOF;
         );
 
         $em->clear();
-        $reflectedEm = new \ReflectionClass($em);
+        $reflectedEm = new ReflectionClass($em);
 
 
         if ($reflectedEm->hasProperty('repositories')) {
@@ -408,7 +409,7 @@ EOF;
             $repositoryFactoryProperty->setAccessible(true);
             $repositoryFactory = $repositoryFactoryProperty->getValue($em);
 
-            $reflectedRepositoryFactory = new \ReflectionClass($repositoryFactory);
+            $reflectedRepositoryFactory = new ReflectionClass($repositoryFactory);
 
             if ($reflectedRepositoryFactory->hasProperty('repositoryList')) {
                 $repositoryListProperty = $reflectedRepositoryFactory->getProperty('repositoryList');
@@ -522,14 +523,7 @@ EOF;
         return $pk;
     }
 
-    /**
-     * @param string $className
-     * @param array $data
-     * @param array $instances
-     * @return object
-     * @throws ReflectionException
-     */
-    private function instantiateAndPopulateEntity(string $className, array $data, array &$instances)
+    private function instantiateAndPopulateEntity(string $className, array $data, array &$instances): object
     {
         $rpa = new ReflectionPropertyAccessor();
         list($scalars,$relations) = $this->splitScalarsAndRelations($className, $data);
@@ -545,14 +539,7 @@ EOF;
         return $instance;
     }
 
-    /**
-     * @param object $instance
-     * @param array $data
-     * @param array &$instances
-     * @return object
-     * @throws ReflectionException
-     */
-    private function populateEntity($instance, array $data, array &$instances)
+    private function populateEntity(object $instance, array $data, array &$instances): object
     {
         $rpa = new ReflectionPropertyAccessor();
         $className = get_class($instance);
@@ -570,11 +557,6 @@ EOF;
         return $instance;
     }
 
-    /**
-     * @param string $className
-     * @param array $data
-     * @return array
-     */
     private function splitScalarsAndRelations(string $className, array $data): array
     {
         $scalars = [];
@@ -593,14 +575,7 @@ EOF;
         return [$scalars, $relations];
     }
 
-    /**
-     * @param string $className
-     * @param object $master
-     * @param array $data
-     * @param array &$instances
-     * @return array
-     */
-    private function instantiateRelations(string $className, $master, array $data, array &$instances): array
+    private function instantiateRelations(string $className, object $master, array $data, array &$instances): array
     {
         $metadata = $this->em->getClassMetadata($className);
 
@@ -641,7 +616,7 @@ EOF;
      * @return array|mixed
      * @throws ReflectionException
      */
-    private function extractPrimaryKey($instance)
+    private function extractPrimaryKey(object $instance)
     {
         $className = get_class($instance);
         $metadata = $this->em->getClassMetadata($className);
@@ -804,11 +779,9 @@ EOF;
      * See https://www.doctrine-project.org/projects/doctrine-orm/en/current/tutorials/embeddables.html for
      * details about this Doctrine feature.
      *
-     * @param object $entityObject
-     * @param array $data
      * @throws ReflectionException
      */
-    private function populateEmbeddables($entityObject, array $data)
+    private function populateEmbeddables(object $entityObject, array $data): void
     {
         $rpa = new ReflectionPropertyAccessor();
         $metadata = $this->em->getClassMetadata(get_class($entityObject));
@@ -837,15 +810,14 @@ EOF;
      * $I->seeInRepository(User::class, ['name' => 'davert']);
      * $I->seeInRepository(User::class, ['name' => 'davert', 'Company' => ['name' => 'Codegyre']]);
      * $I->seeInRepository(Client::class, ['User' => ['Company' => ['name' => 'Codegyre']]]);
-     * ?>
      * ```
      *
      * Fails if record for given criteria can\'t be found,
      *
-     * @param $entity
+     * @param class-string $entity
      * @param array $params
      */
-    public function seeInRepository($entity, $params = [])
+    public function seeInRepository(string $entity, array $params = []): void
     {
         $res = $this->proceedSeeInRepository($entity, $params);
         $this->assert($res);
@@ -854,16 +826,16 @@ EOF;
     /**
      * Flushes changes to database and performs `findOneBy()` call for current repository.
      *
-     * @param $entity
+     * @param class-string $entity
      * @param array $params
      */
-    public function dontSeeInRepository($entity, $params = [])
+    public function dontSeeInRepository(string $entity, array $params = []): void
     {
         $res = $this->proceedSeeInRepository($entity, $params);
         $this->assertNot($res);
     }
 
-    protected function proceedSeeInRepository($entity, $params = []): array
+    protected function proceedSeeInRepository(string $entity, array $params = []): array
     {
         // we need to store to database...
         $this->em->flush();
@@ -885,16 +857,12 @@ EOF;
      * ``` php
      * <?php
      * $email = $I->grabFromRepository(User::class, 'email', ['name' => 'davert']);
-     * ?>
      * ```
      *
-     * @version 1.1
-     * @param $entity
-     * @param $field
-     * @param array $params
      * @return mixed
+     * @version 1.1
      */
-    public function grabFromRepository($entity, $field, $params = [])
+    public function grabFromRepository(string $entity, string $field, array $params = [])
     {
         // we need to store to database...
         $this->em->flush();
@@ -915,15 +883,14 @@ EOF;
      * ``` php
      * <?php
      * $users = $I->grabEntitiesFromRepository(User::class, ['name' => 'davert']);
-     * ?>
      * ```
      *
-     * @param $entity
+     * @param string $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return array
      * @version 1.1
      */
-    public function grabEntitiesFromRepository($entity, array $params = []): array
+    public function grabEntitiesFromRepository(string $entity, array $params = []): array
     {
         // we need to store to database...
         $this->em->flush();
@@ -945,15 +912,14 @@ EOF;
      * ``` php
      * <?php
      * $user = $I->grabEntityFromRepository(User::class, ['id' => '1234']);
-     * ?>
      * ```
      *
-     * @param $entity
+     * @param class-string $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
      * @return object
      * @version 1.1
      */
-    public function grabEntityFromRepository($entity, array $params = [])
+    public function grabEntityFromRepository(string $entity, array $params = []): object
     {
         // we need to store to database...
         $this->em->flush();
@@ -971,7 +937,7 @@ EOF;
         $this->_buildAssociationQuery($qb, $assoc, $alias, $params, $paramIndex);
     }
 
-    protected function _buildAssociationQuery(QueryBuilder $qb, string $assoc, string $alias, array $params, int &$paramIndex)
+    protected function _buildAssociationQuery(QueryBuilder $qb, string $assoc, string $alias, array $params, int &$paramIndex): void
     {
         $data = $this->em->getClassMetadata($assoc);
         foreach ($params as $key => $val) {
@@ -999,7 +965,7 @@ EOF;
         }
     }
 
-    public function _getEntityManager()
+    public function _getEntityManager(): EntityManagerInterface
     {
         if (is_null($this->em)) {
             $this->retrieveEntityManager();
@@ -1007,12 +973,6 @@ EOF;
         return $this->em;
     }
 
-    /**
-     * @param mixed $instance
-     * @param mixed $pks
-     *
-     * @throws ReflectionException
-     */
     private function debugEntityCreation($instance, $pks)
     {
         $message = get_class($instance).' entity created with ';
@@ -1035,10 +995,6 @@ EOF;
         $this->debug(trim($message, ' ,'));
     }
 
-    /**
-     * @param mixed $pk
-     * @return bool
-     */
     private function isDoctrineEntity($pk): bool
     {
         $isEntity = is_object($pk);
