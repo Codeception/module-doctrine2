@@ -21,6 +21,8 @@ composer require "codeception/module-doctrine2" --dev
 
 See [the module documentation](https://codeception.com/docs/modules/Doctrine2).
 
+[Changelog](https://github.com/Codeception/module-doctrine2/releases)
+
 ## License
 
 `Codeception Module Doctrine2` is open-sourced software licensed under the [MIT](/LICENSE) License.
