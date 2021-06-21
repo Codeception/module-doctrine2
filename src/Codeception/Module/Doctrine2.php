@@ -680,6 +680,7 @@ EOF;
      *
      * @param string|string[]|object[] $fixtures
      * @param bool $append
+     * @return ORMExecutor
      * @throws ModuleException
      * @throws ModuleRequireException
      */
@@ -781,6 +782,7 @@ EOF;
             $purger->setPurgeMode($this->config['purge_mode']);
             $executor = new ORMExecutor($this->em, $purger);
             $executor->execute($loader->getFixtures(), $append);
+            return $executor;
         } catch (Exception $e) {
             throw new ModuleException(
                 __CLASS__,
