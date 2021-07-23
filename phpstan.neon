@@ -1,0 +1,13 @@
+parameters:
+  level: 6
+  paths:
+    - src
+    - tests
+  checkMissingIterableValueType: false
+  ignoreErrors:
+      - path: tests/
+        message: '#no typehint specified#'
+      - path: tests/
+        message: '#no return typehint specified#'
+      - path: tests/
+        message: '#does not specify its types#'

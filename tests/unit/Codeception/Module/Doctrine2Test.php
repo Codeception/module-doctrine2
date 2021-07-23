@@ -351,6 +351,7 @@ final class Doctrine2Test extends Unit
         $this->_preloadFixtures();
         $this->expectException(ModuleException::class);
         $this->expectExceptionMessageRegExp('/Fixture class ".*" does not exist/');
+        // @phpstan-ignore-next-line
         $this->module->loadFixtures('InvalidFixtureClass');
     }
 
@@ -361,6 +362,7 @@ final class Doctrine2Test extends Unit
         $this->expectExceptionMessageRegExp('/Fixture class ".*" does not inherit from/');
         // Somewhat risky, but it's unlikely unit class will
         // ever inherit from a fixture interface:
+        // @phpstan-ignore-next-line
         $this->module->loadFixtures(__CLASS__);
     }
 
@@ -369,6 +371,7 @@ final class Doctrine2Test extends Unit
         $this->_preloadFixtures();
         $this->expectException(ModuleException::class);
         $this->expectExceptionMessageRegExp('/Fixture ".*" does not inherit from/');
+        // @phpstan-ignore-next-line
         $this->module->loadFixtures(new \stdClass);
     }
 
@@ -377,6 +380,7 @@ final class Doctrine2Test extends Unit
         $this->_preloadFixtures();
         $this->expectException(ModuleException::class);
         $this->expectExceptionMessageRegExp('/Fixture is expected to be .* got ".*" instead/');
+        // @phpstan-ignore-next-line
         $this->module->loadFixtures(1);
     }
 
