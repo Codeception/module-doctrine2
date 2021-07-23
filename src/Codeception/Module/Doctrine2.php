@@ -136,7 +136,9 @@ use function var_export;
 class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 {
 
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $config = [
         'cleanup' => true,
         'connection_callback' => false,
@@ -144,7 +146,9 @@ class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
         'purge_mode' => 1, // ORMPurger::PURGE_MODE_DELETE
     ];
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $dependencyMessage = <<<EOF
 Provide connection_callback function to establish database connection and get Entity Manager:
 
