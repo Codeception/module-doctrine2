@@ -1,4 +1,4 @@
-<?php
+›<?php
 
 declare(strict_types=1);
 
@@ -117,6 +117,8 @@ final class Doctrine2Test extends Unit
 
         require_once $dir . "/TestFixture1.php";
         require_once $dir . "/TestFixture2.php";
+        require_once $dir . "/SharedTestFixture1.php";
+        require_once $dir . "/SharedTestFixture2.php";
     }
 
     public function testPlainEntity()
@@ -561,5 +563,19 @@ final class Doctrine2Test extends Unit
         $this->assertSame($bbb1->getA(), $aaa);
         $this->assertSame($bbb2->getA(), $aaa);
         $this->assertSame($ccc->getB(), $bbb2);
+    }
+
+    public function testReferenceAccess()
+    {
+        $this->_preloadFixtures();
+
+        $executor = $this->module->loadFixtures([SharedTestFixture1::class, SharedTestFixture2::class]);
+        $repository = $executor->getReferenceRepository();
+
+        $sharedFixture1 = $repository->getReference('shared-testfixture-1');
+        $sharedFixture2 = $repository->getReference('shared-testfixture-2');
+
+        $this->assertEquals('from SharedTestFixture1', $sharedFixture1->getName());
+        $this->assertEquals('from SharedTestFixture2', $sharedFixture2->getName());
     }
 }
