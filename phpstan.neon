@@ -1,9 +1,13 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
   level: 6
   paths:
     - src
     - tests
   checkMissingIterableValueType: false
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
       - path: tests/
         message: '#no typehint specified#'
