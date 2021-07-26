@@ -2,10 +2,10 @@
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 
-if (version_compare(PHP_VERSION, '7.1', '>')) {
+if (PHP_VERSION_ID < 70200) {
     class TestFixture1 implements FixtureInterface
     {
-        public function load(Doctrine\Persistence\ObjectManager $manager)
+        public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
         {
             $entity = new PlainEntity();
             $entity->setName('from TestFixture1');
@@ -16,7 +16,7 @@ if (version_compare(PHP_VERSION, '7.1', '>')) {
 } else {
     class TestFixture1 implements FixtureInterface
     {
-        public function load(Doctrine\Common\Persistence\ObjectManager $manager)
+        public function load(\Doctrine\Persistence\ObjectManager $manager)
         {
             $entity = new PlainEntity();
             $entity->setName('from TestFixture1');

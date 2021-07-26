@@ -137,6 +137,9 @@ use function var_export;
 class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 {
 
+    /**
+     * @var array
+     */
     protected $config = [
         'cleanup' => true,
         'connection_callback' => false,
@@ -144,6 +147,9 @@ class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
         'purge_mode' => 1, // ORMPurger::PURGE_MODE_DELETE
     ];
 
+    /**
+     * @var string
+     */
     protected $dependencyMessage = <<<EOF
 Provide connection_callback function to establish database connection and get Entity Manager:
 
@@ -161,12 +167,12 @@ modules:
 EOF;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var \Doctrine\ORM\EntityManagerInterface|null
      */
     public $em = null;
 
     /**
-     * @var DoctrineProvider
+     * @var DoctrineProvider|null
      */
     private $dependentModule;
 
@@ -178,16 +184,25 @@ EOF;
         return ['Codeception\Lib\Interfaces\DoctrineProvider' => $this->dependencyMessage];
     }
 
+    /**
+     * @return void
+     */
     public function _inject(DoctrineProvider $dependentModule = null)
     {
         $this->dependentModule = $dependentModule;
     }
 
+    /**
+     * @return void
+     */
     public function _beforeSuite($settings = [])
     {
         $this->retrieveEntityManager();
     }
 
+    /**
+     * @return void
+     */
     public function _before(TestInterface $test)
     {
         $this->retrieveEntityManager();
@@ -208,6 +223,9 @@ EOF;
         }
     }
 
+    /**
+     * @return void
+     */
     public function onReconfigure()
     {
         if (!$this->em instanceof \Doctrine\ORM\EntityManagerInterface) {
@@ -240,6 +258,9 @@ EOF;
         }
     }
 
+    /**
+     * @return void
+     */
     protected function retrieveEntityManager()
     {
         if ($this->dependentModule) {
@@ -273,6 +294,9 @@ EOF;
         $this->em->getConnection()->connect();
     }
 
+    /**
+     * @return void
+     */
     public function _after(TestInterface $test)
     {
         if (!$this->em instanceof \Doctrine\ORM\EntityManagerInterface) {
@@ -291,6 +315,9 @@ EOF;
         $this->em->getConnection()->close();
     }
 
+    /**
+     * @return void
+     */
     protected function clean()
     {
         $em = $this->em;
@@ -366,8 +393,8 @@ EOF;
      * This creates a stub class for Entity\User repository with redefined method findByUsername,
      * which will always return the NULL value.
      *
-     * @param string $className
-     * @param array $methods
+     * @param class-string $className
+     * @param array<string, callable> $methods
      */
     public function haveFakeRepository(string $className, array $methods = []): void
     {
@@ -492,7 +519,8 @@ EOF;
      *
      * Note that `$em->persist()`, `$em->refresh()`, and `$em->flush()` are called every time.
      *
-     * @param string|object $classNameOrInstance
+     * @template T of object
+     * @param class-string<T>|T $classNameOrInstance
      * @param array $data
      * @return mixed
      */
@@ -525,16 +553,17 @@ EOF;
     }
 
     /**
-     * @param string $className
+     * @template T of object
+     * @param class-string<T> $className
      * @param array $data
-     * @param array $instances
-     * @return object
+     * @param list<object> $instances
+     * @return T
      * @throws ReflectionException
      */
     private function instantiateAndPopulateEntity(string $className, array $data, array &$instances)
     {
         $rpa = new ReflectionPropertyAccessor();
-        list($scalars,$relations) = $this->splitScalarsAndRelations($className, $data);
+        [$scalars,$relations] = $this->splitScalarsAndRelations($className, $data);
         // Pass relations that are already objects to the constructor, too
         $properties = array_merge(
             $scalars,
@@ -542,16 +571,18 @@ EOF;
                 return is_object($relation);
             })
         );
+        /** @var T $instance */
         $instance = $rpa->createWithProperties($className, $properties);
         $this->populateEntity($instance, $data, $instances);
         return $instance;
     }
 
     /**
-     * @param object $instance
+     * @template T of object
+     * @param T $instance
      * @param array $data
-     * @param array &$instances
-     * @return object
+     * @param list<object> $instances
+     * @return T
      * @throws ReflectionException
      */
     private function populateEntity($instance, array $data, array &$instances)
@@ -559,7 +590,7 @@ EOF;
         $rpa = new ReflectionPropertyAccessor();
         $className = get_class($instance);
         $instances[] = $instance;
-        list($scalars, $relations) = $this->splitScalarsAndRelations($className, $data);
+        [$scalars, $relations] = $this->splitScalarsAndRelations($className, $data);
         $rpa->setProperties(
             $instance,
             array_merge(
@@ -573,9 +604,9 @@ EOF;
     }
 
     /**
-     * @param string $className
+     * @param class-string $className
      * @param array $data
-     * @return array
+     * @return array{0: array, 1: array}
      */
     private function splitScalarsAndRelations(string $className, array $data): array
     {
@@ -596,10 +627,10 @@ EOF;
     }
 
     /**
-     * @param string $className
+     * @param class-string $className
      * @param object $master
      * @param array $data
-     * @param array &$instances
+     * @param list<object> $instances
      * @return array
      */
     private function instantiateRelations(string $className, $master, array $data, array &$instances): array
@@ -680,7 +711,7 @@ EOF;
      *
      * This method requires [`doctrine/data-fixtures`](https://github.com/doctrine/data-fixtures) to be installed.
      *
-     * @param string|string[]|object[] $fixtures
+     * @param class-string<FixtureInterface>|class-string<FixtureInterface>[]|list<FixtureInterface> $fixtures
      * @param bool $append
      * @throws ModuleException
      * @throws ModuleRequireException
@@ -758,7 +789,7 @@ EOF;
                     sprintf(
                         'Fixture is expected to be an instance or class name, inherited from "%s"; got "%s" instead',
                         FixtureInterface::class,
-                        is_object($fixture) ? get_class($fixture) ? is_string($fixture) : $fixture : gettype($fixture)
+                        gettype($fixture)
                     )
                 );
             }
@@ -808,6 +839,8 @@ EOF;
      *
      * @param object $entityObject
      * @param array $data
+     *
+     * @return void
      * @throws ReflectionException
      */
     private function populateEmbeddables($entityObject, array $data)
@@ -844,8 +877,9 @@ EOF;
      *
      * Fails if record for given criteria can\'t be found,
      *
-     * @param $entity
+     * @param class-string $entity
      * @param array $params
+     * @return void
      */
     public function seeInRepository($entity, $params = [])
     {
@@ -856,8 +890,9 @@ EOF;
     /**
      * Flushes changes to database and performs `findOneBy()` call for current repository.
      *
-     * @param $entity
+     * @param class-string $entity
      * @param array $params
+     * @return void
      */
     public function dontSeeInRepository($entity, $params = [])
     {
@@ -865,6 +900,12 @@ EOF;
         $this->assertNot($res);
     }
 
+    /**
+     * @param class-string $entity
+     * @param array $params
+     *
+     * @return array{0: 'True', 1: bool, 2: non-empty-string}
+     */
     protected function proceedSeeInRepository($entity, $params = []): array
     {
         // we need to store to database...
@@ -891,8 +932,8 @@ EOF;
      * ```
      *
      * @version 1.1
-     * @param $entity
-     * @param $field
+     * @param class-string $entity
+     * @param string $field
      * @param array $params
      * @return mixed
      */
@@ -920,9 +961,10 @@ EOF;
      * ?>
      * ```
      *
-     * @param $entity
+     * @template T
+     * @param class-string<T> $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
-     * @return array
+     * @return list<T>
      * @version 1.1
      */
     public function grabEntitiesFromRepository($entity, array $params = []): array
@@ -950,9 +992,10 @@ EOF;
      * ?>
      * ```
      *
-     * @param $entity
+     * @template T
+     * @param class-string<T> $entity
      * @param array $params. For `IS NULL`, use `['field' => null]`
-     * @return object
+     * @return T
      * @version 1.1
      */
     public function grabEntityFromRepository($entity, array $params = [])
@@ -973,6 +1016,9 @@ EOF;
         $this->_buildAssociationQuery($qb, $assoc, $alias, $params, $paramIndex);
     }
 
+    /**
+     * @return void
+     */
     protected function _buildAssociationQuery(QueryBuilder $qb, string $assoc, string $alias, array $params, int &$paramIndex)
     {
         $data = $this->em->getClassMetadata($assoc);
@@ -1001,6 +1047,10 @@ EOF;
         }
     }
 
+    /**
+     * @return \Doctrine\ORM\EntityManagerInterface
+     * @throws ModuleConfigException
+     */
     public function _getEntityManager()
     {
         if (is_null($this->em)) {
@@ -1010,12 +1060,12 @@ EOF;
     }
 
     /**
-     * @param mixed $instance
+     * @param object $instance
      * @param mixed $pks
      *
      * @throws ReflectionException
      */
-    private function debugEntityCreation($instance, $pks)
+    private function debugEntityCreation($instance, $pks): void
     {
         $message = get_class($instance).' entity created with ';
 
@@ -1050,7 +1100,7 @@ EOF;
                 $this->em->getClassMetadata(get_class($pk));
             } catch (\Doctrine\ORM\Mapping\MappingException $ex) {
                 $isEntity = false;
-            } catch (\Doctrine\Common\Persistence\Mapping\MappingException $ex) {
+            } catch (\Doctrine\Common\Persistence\Mapping\MappingException $ex) { // @phpstan-ignore-line
                 $isEntity = false;
             } catch (\Doctrine\Persistence\Mapping\MappingException $ex) {
                 $isEntity = false;
