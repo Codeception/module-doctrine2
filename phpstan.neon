@@ -1,0 +1,21 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+  level: 6
+  paths:
+    - src
+    - tests
+  excludePaths:
+    analyse:
+        - tests/data/doctrine2_fixtures/TestFixture1.php
+        - tests/data/doctrine2_fixtures/TestFixture2.php
+  checkMissingIterableValueType: false
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+      - path: tests/
+        message: '#no typehint specified#'
+      - path: tests/
+        message: '#no return typehint specified#'
+      - path: tests/
+        message: '#does not specify its types#'
