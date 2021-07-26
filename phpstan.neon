@@ -6,6 +6,10 @@ parameters:
   paths:
     - src
     - tests
+  excludePaths:
+    analyse:
+        - tests/data/doctrine2_fixtures/TestFixture1.php
+        - tests/data/doctrine2_fixtures/TestFixture2.php
   checkMissingIterableValueType: false
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
