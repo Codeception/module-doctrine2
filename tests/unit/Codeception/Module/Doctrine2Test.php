@@ -562,4 +562,18 @@ final class Doctrine2Test extends Unit
         $this->assertSame($bbb2->getA(), $aaa);
         $this->assertSame($ccc->getB(), $bbb2);
     }
+
+    public function testHaveFakeRepository()
+    {
+        $e1 = new PlainEntity();
+        $e2 = new PlainEntity();
+        $this->module->haveFakeRepository(PlainEntity::class, [
+            'findBy' => [$e1, $e2],
+        ]);
+
+        $entities = $this->em->getRepository(PlainEntity::class)->findBy(['name' => 'test']);
+        $this->assertCount(2, $entities);
+        $this->assertContains($e1, $entities);
+        $this->assertContains($e2, $entities);
+    }
 }
