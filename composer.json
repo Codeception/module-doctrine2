@@ -13,19 +13,20 @@
             "name":"Alex Kunin"
         }
     ],
-    "minimum-stability": "RC",
+    "minimum-stability": "dev",
     "require": {
-        "php": "^7.4 | ^8.0",
+        "php": "^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "codeception/codeception": "^4.0"
+        "codeception/codeception": "^5.0"
     },
     "require-dev": {
-        "doctrine/annotations": "^1",
-        "doctrine/data-fixtures": "^1",
+        "codeception/stub": "^4.0",
+        "doctrine/annotations": "^1.13",
+        "doctrine/data-fixtures": "^1.5",
         "doctrine/orm": "^2.10",
-        "phpstan/phpstan": "^0.12",
-        "ramsey/uuid-doctrine": "^1.5",
+        "phpstan/phpstan": "^0.12.93",
+        "ramsey/uuid-doctrine": "^1.6",
         "symfony/cache": "^4.4 | ^5.4 | ^6.0"
     },
     "autoload": {
