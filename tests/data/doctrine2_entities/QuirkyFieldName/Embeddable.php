@@ -10,9 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Embeddable
 {
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $val;
+    private ?string $val = null;
 }

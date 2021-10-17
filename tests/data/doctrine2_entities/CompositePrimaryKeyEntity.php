@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -7,18 +8,15 @@ use Doctrine\ORM\Mapping as ORM;
 class CompositePrimaryKeyEntity
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    private $integerPart;
+    private int $integerPart;
 
     /**
-     * @var string|null
      *
      * @ORM\Id
      * @ORM\Column(type="string")
      */
-    private $stringPart;
+    private string $stringPart;
 }

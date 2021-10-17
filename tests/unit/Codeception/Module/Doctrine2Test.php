@@ -3,32 +3,38 @@
 declare(strict_types=1);
 
 use Codeception\Exception\ModuleException;
+use Codeception\Lib\ModuleContainer;
 use Codeception\Module\Doctrine2;
 use Codeception\Test\Unit;
+use Codeception\Util\Stub;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
+use MultilevelRelations\A;
+use MultilevelRelations\B;
+use MultilevelRelations\C;
+use QuirkyFieldName\Association;
+use QuirkyFieldName\AssociationHost;
+use QuirkyFieldName\Embeddable;
+use QuirkyFieldName\EmbeddableHost;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
 
 final class Doctrine2Test extends Unit
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private ?EntityManager $em = null;
 
-    /**
-     * @var Doctrine2
-     */
-    private $module;
+    private ?Doctrine2 $module = null;
 
     protected static function _setUpBeforeClass()
     {
-        if (false === Type::hasType('uuid')) {
+        if (!Type::hasType('uuid')) {
             Type::addType('uuid', UuidType::class);
         }
     }
@@ -81,24 +87,22 @@ final class Doctrine2Test extends Unit
             $this->em->getClassMetadata(JoinedEntity::class),
             $this->em->getClassMetadata(EntityWithEmbeddable::class),
             $this->em->getClassMetadata(NonTypicalPrimaryKeyEntity::class),
-            $this->em->getClassMetadata(\QuirkyFieldName\Association::class),
-            $this->em->getClassMetadata(\QuirkyFieldName\AssociationHost::class),
-            $this->em->getClassMetadata(\QuirkyFieldName\Embeddable::class),
-            $this->em->getClassMetadata(\QuirkyFieldName\EmbeddableHost::class),
-            $this->em->getClassMetadata(\MultilevelRelations\A::class),
-            $this->em->getClassMetadata(\MultilevelRelations\B::class),
-            $this->em->getClassMetadata(\MultilevelRelations\C::class),
+            $this->em->getClassMetadata(Association::class),
+            $this->em->getClassMetadata(AssociationHost::class),
+            $this->em->getClassMetadata(Embeddable::class),
+            $this->em->getClassMetadata(EmbeddableHost::class),
+            $this->em->getClassMetadata(A::class),
+            $this->em->getClassMetadata(B::class),
+            $this->em->getClassMetadata(C::class),
             $this->em->getClassMetadata(\CircularRelations\A::class),
             $this->em->getClassMetadata(\CircularRelations\B::class),
             $this->em->getClassMetadata(\CircularRelations\C::class),
-            $this->em->getClassMetadata(\EntityWithUuid::class),
+            $this->em->getClassMetadata(EntityWithUuid::class),
         ]);
 
-        $container = \Codeception\Util\Stub::make('Codeception\Lib\ModuleContainer');
+        $container = Stub::make(ModuleContainer::class);
         $this->module = new Doctrine2($container, [
-            'connection_callback' => function () {
-                return $this->em;
-            },
+            'connection_callback' => fn(): EntityManager => $this->em,
         ]);
 
         $this->module->_initialize();
@@ -107,9 +111,9 @@ final class Doctrine2Test extends Unit
 
     private function _preloadFixtures()
     {
-        if (!class_exists(\Doctrine\Common\DataFixtures\Loader::class)
-            || !class_exists(\Doctrine\Common\DataFixtures\Purger\ORMPurger::class)
-            || !class_exists(\Doctrine\Common\DataFixtures\Executor\ORMExecutor::class)) {
+        if (!class_exists(Loader::class)
+            || !class_exists(ORMPurger::class)
+            || !class_exists(ORMExecutor::class)) {
             $this->markTestSkipped('doctrine/data-fixtures is not installed');
         }
 
@@ -157,9 +161,10 @@ final class Doctrine2Test extends Unit
             ['name' => 'Constructor Test 1', 'foo' => 'test', 'bar' => 'foobar']
         );
     }
+
     public function testEntityWithConstructorParametersExceptionOnMissingParameter()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Constructor parameter "name" missing');
 
         $this->module->haveInRepository(EntityWithConstructorParameters::class);
@@ -192,25 +197,25 @@ final class Doctrine2Test extends Unit
         // names generated within Doctrine2. Specifically, parameter name for entity's own field
         // '_assoc_val' clashes with parameter name for field 'val' of relation 'assoc'.
 
-        $this->module->dontSeeInRepository(\QuirkyFieldName\AssociationHost::class, [
-            'assoc'      => [
+        $this->module->dontSeeInRepository(AssociationHost::class, [
+            'assoc' => [
                 'val' => 'a',
             ],
             '_assoc_val' => 'b',
         ]);
-        $this->module->haveInRepository(\QuirkyFieldName\AssociationHost::class, [
-            'assoc'      => $this->module->grabEntityFromRepository(
-                \QuirkyFieldName\Association::class,
+        $this->module->haveInRepository(AssociationHost::class, [
+            'assoc' => $this->module->grabEntityFromRepository(
+                Association::class,
                 [
-                    'id' => $this->module->haveInRepository(\QuirkyFieldName\Association::class, [
+                    'id' => $this->module->haveInRepository(Association::class, [
                         'val' => 'a',
                     ]),
                 ]
             ),
             '_assoc_val' => 'b',
         ]);
-        $this->module->seeInRepository(\QuirkyFieldName\AssociationHost::class, [
-            'assoc'      => [
+        $this->module->seeInRepository(AssociationHost::class, [
+            'assoc' => [
                 'val' => 'a',
             ],
             '_assoc_val' => 'b',
@@ -221,15 +226,15 @@ final class Doctrine2Test extends Unit
     {
         // Same as testQuirkyAssociationFieldNames(), but for embeddables.
 
-        $this->module->dontSeeInRepository(\QuirkyFieldName\EmbeddableHost::class, [
+        $this->module->dontSeeInRepository(EmbeddableHost::class, [
             'embed.val' => 'a',
             'embedval'  => 'b',
         ]);
-        $this->module->haveInRepository(\QuirkyFieldName\EmbeddableHost::class, [
+        $this->module->haveInRepository(EmbeddableHost::class, [
             'embed.val' => 'a',
             'embedval'  => 'b',
         ]);
-        $this->module->seeInRepository(\QuirkyFieldName\EmbeddableHost::class, [
+        $this->module->seeInRepository(EmbeddableHost::class, [
             'embed.val' => 'a',
             'embedval'  => 'b',
         ]);
@@ -275,11 +280,9 @@ final class Doctrine2Test extends Unit
         $this->module->haveInRepository(PlainEntity::class, ['name' => 'b']);
         $this->module->haveInRepository(PlainEntity::class, ['name' => 'c']);
 
-        $getName = function ($entity) {
-            return $entity->getName();
-        };
+        $getName = fn($entity) => $entity->getName();
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'a',
                 'b',
@@ -290,7 +293,7 @@ final class Doctrine2Test extends Unit
             ]))
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'c',
                 'b',
@@ -372,7 +375,7 @@ final class Doctrine2Test extends Unit
         $this->expectException(ModuleException::class);
         $this->expectExceptionMessageRegExp('/Fixture ".*" does not inherit from/');
         // @phpstan-ignore-next-line
-        $this->module->loadFixtures(new \stdClass);
+        $this->module->loadFixtures(new stdClass);
     }
 
     public function testUnsuitableFixtureType()
@@ -389,7 +392,7 @@ final class Doctrine2Test extends Unit
         $primaryKey = $this->module->haveInRepository(NonTypicalPrimaryKeyEntity::class, [
             'primaryKey' => 'abc',
         ]);
-        $this->assertEquals('abc', $primaryKey);
+        $this->assertSame('abc', $primaryKey);
     }
 
     public function testCompositePrimaryKey()
@@ -398,7 +401,7 @@ final class Doctrine2Test extends Unit
             'integerPart' => 123,
             'stringPart' => 'abc',
         ]);
-        $this->assertEquals([123, 'abc'], $res);
+        $this->assertSame([123, 'abc'], $res);
     }
 
     /**
@@ -413,7 +416,7 @@ final class Doctrine2Test extends Unit
 
         $pks = $this->module->haveInRepository($c);
 
-        $this->assertEquals([$a, $b], $pks);
+        $this->assertSame([$a, $b], $pks);
     }
 
     /**
@@ -441,23 +444,23 @@ final class Doctrine2Test extends Unit
         $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ? WHERE id = ?', ['b', $id]);
 
         // Our original entity still has old data:
-        $this->assertEquals('a', $original->getName());
+        $this->assertSame('a', $original->getName());
 
         // Grabbing it again should not work as EntityManager still does not know about external change:
         $grabbed1 = $this->module->grabEntityFromRepository(PlainEntity::class, ['id' => $id]);
         $this->assertSame($original, $grabbed1);
-        $this->assertEquals('a', $grabbed1->getName());
+        $this->assertSame('a', $grabbed1->getName());
 
         // Now we explicitly ask EntityManager invalidate its cache:
         $this->module->refreshEntities($original);
 
         // Without grabbing, entity should be updated:
-        $this->assertEquals('b', $original->getName());
+        $this->assertSame('b', $original->getName());
 
         // Grabbing it again should also work:
         $grabbed2 = $this->module->grabEntityFromRepository(PlainEntity::class, ['id' => $id]);
         $this->assertSame($original, $grabbed2);
-        $this->assertEquals('b', $grabbed2->getName());
+        $this->assertSame('b', $grabbed2->getName());
     }
 
     public function testRefreshingMultipleEntities()
@@ -470,13 +473,13 @@ final class Doctrine2Test extends Unit
 
         $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ?', ['c']);
 
-        $this->assertEquals('a', $a->getName());
-        $this->assertEquals('b', $b->getName());
+        $this->assertSame('a', $a->getName());
+        $this->assertSame('b', $b->getName());
 
         $this->module->refreshEntities([$a, $b]);
 
-        $this->assertEquals('c', $a->getName());
-        $this->assertEquals('c', $b->getName());
+        $this->assertSame('c', $a->getName());
+        $this->assertSame('c', $b->getName());
     }
 
     public function testClear()
@@ -500,23 +503,23 @@ final class Doctrine2Test extends Unit
 
     public function testManyToOneRecursiveEntityCreation()
     {
-        $this->module->haveInRepository(\MultilevelRelations\C::class, [
+        $this->module->haveInRepository(C::class, [
             'name' => 'ccc',
-            'b'    => [
+            'b' => [
                 'name' => 'bbb',
-                'a'    => [
+                'a' => [
                     'name' => 'aaa',
                 ],
             ],
         ]);
 
-        $aaa = $this->module->grabEntityFromRepository(\MultilevelRelations\A::class, ['name' => 'aaa']);
+        $aaa = $this->module->grabEntityFromRepository(A::class, ['name' => 'aaa']);
         $this->assertNotNull($aaa);
 
-        $bbb = $this->module->grabEntityFromRepository(\MultilevelRelations\B::class, ['name' => 'bbb']);
+        $bbb = $this->module->grabEntityFromRepository(B::class, ['name' => 'bbb']);
         $this->assertNotNull($bbb);
 
-        $ccc = $this->module->grabEntityFromRepository(\MultilevelRelations\C::class, ['name' => 'ccc']);
+        $ccc = $this->module->grabEntityFromRepository(C::class, ['name' => 'ccc']);
         $this->assertNotNull($ccc);
 
         $this->assertSame($ccc->getB(), $bbb);
@@ -526,15 +529,15 @@ final class Doctrine2Test extends Unit
 
     public function testOneToManyRecursiveEntityCreation()
     {
-        $this->module->haveInRepository(\MultilevelRelations\A::class, [
+        $this->module->haveInRepository(A::class, [
             'name' => 'aaa',
-            'b'    => [
+            'b' => [
                 [
                     'name' => 'bbb1',
                 ],
                 [
                     'name' => 'bbb2',
-                    'c'    => [
+                    'c' => [
                         [
                             'name' => 'ccc',
                         ],
@@ -543,16 +546,16 @@ final class Doctrine2Test extends Unit
             ],
         ]);
 
-        $aaa = $this->module->grabEntityFromRepository(\MultilevelRelations\A::class, ['name' => 'aaa']);
+        $aaa = $this->module->grabEntityFromRepository(A::class, ['name' => 'aaa']);
         $this->assertNotNull($aaa);
 
-        $bbb1 = $this->module->grabEntityFromRepository(\MultilevelRelations\B::class, ['name' => 'bbb1']);
+        $bbb1 = $this->module->grabEntityFromRepository(B::class, ['name' => 'bbb1']);
         $this->assertNotNull($bbb1);
 
-        $bbb2 = $this->module->grabEntityFromRepository(\MultilevelRelations\B::class, ['name' => 'bbb2']);
+        $bbb2 = $this->module->grabEntityFromRepository(B::class, ['name' => 'bbb2']);
         $this->assertNotNull($bbb2);
 
-        $ccc = $this->module->grabEntityFromRepository(\MultilevelRelations\C::class, ['name' => 'ccc']);
+        $ccc = $this->module->grabEntityFromRepository(C::class, ['name' => 'ccc']);
         $this->assertNotNull($ccc);
 
         $this->assertContains($bbb1, $aaa->getB()->toArray());

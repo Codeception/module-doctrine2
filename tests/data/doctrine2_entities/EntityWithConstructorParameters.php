@@ -8,34 +8,26 @@ use Doctrine\ORM\Mapping as ORM;
 class EntityWithConstructorParameters
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $foo;
+    private ?string $foo = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string")
      */
-    private $bar;
+    private string $bar = '';
 
     public function __construct($name, $foo = null, $bar = 'foobar')
     {

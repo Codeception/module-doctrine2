@@ -10,32 +10,23 @@ use Doctrine\ORM\Mapping as ORM;
 class AssociationHost
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var Association|null
-     *
      * @ORM\OneToOne(targetEntity="Association")
      */
-    private $assoc;
+    private ?Association $assoc = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $_assoc_val;
+    private ?string $_assoc_val = null;
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

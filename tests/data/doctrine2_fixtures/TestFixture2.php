@@ -1,27 +1,16 @@
 <?php
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Persistence\ObjectManager;
 
-if (PHP_VERSION_ID < 70200) {
-    class TestFixture2 implements FixtureInterface
+class TestFixture2 implements FixtureInterface
+{
+    public function load(ObjectManager $manager): void
     {
-        public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
-        {
-            $entity = new PlainEntity();
-            $entity->setName('from TestFixture2');
-            $manager->persist($entity);
-            $manager->flush();
-        }
-    }
-} else {
-    class TestFixture2 implements FixtureInterface
-    {
-        public function load(\Doctrine\Persistence\ObjectManager $manager)
-        {
-            $entity = new PlainEntity();
-            $entity->setName('from TestFixture2');
-            $manager->persist($entity);
-            $manager->flush();
-        }
+        $entity = new PlainEntity();
+        $entity->setName('from TestFixture2');
+
+        $manager->persist($entity);
+        $manager->flush();
     }
 }

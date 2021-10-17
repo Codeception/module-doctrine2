@@ -10,27 +10,21 @@ use Doctrine\ORM\Mapping as ORM;
 class EmbeddableHost
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var Embeddable
-     *
      * @ORM\Embedded(class="Embeddable")
      */
-    private $embed;
+    private Embeddable $embed;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $embedval;
+    private ?string $embedval = null;
 
     public function __construct()
     {

@@ -1,7 +1,9 @@
 <?php
 
 namespace CircularRelations;
+
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,37 +13,29 @@ use Doctrine\ORM\Mapping as ORM;
 class B
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="C", mappedBy="b")
      */
-    private $cs;
+    private Collection $cs;
 
     public function __construct()
     {
         $this->cs = new ArrayCollection();
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getCs()
+    public function getCs(): ArrayCollection
     {
         return $this->cs;
     }
