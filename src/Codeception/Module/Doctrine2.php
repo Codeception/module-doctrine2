@@ -30,7 +30,7 @@ use function gettype;
 use function is_array;
 use function is_object;
 use function is_string;
-use function spl_object_hash;
+use function spl_object_id;
 use function sprintf;
 use function var_export;
 
@@ -442,7 +442,7 @@ EOF;
                 $repositoryListProperty = $reflectedRepositoryFactory->getProperty('repositoryList');
                 $repositoryListProperty->setAccessible(true);
 
-                $repositoryHash = $em->getClassMetadata($className)->getName() . spl_object_hash($em);
+                $repositoryHash = $em->getClassMetadata($className)->getName() . spl_object_id($em);
                 $repositoryListProperty->setValue(
                     $repositoryFactory,
                     [$repositoryHash => $mock]
