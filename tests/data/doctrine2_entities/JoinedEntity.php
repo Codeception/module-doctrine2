@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -6,11 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class JoinedEntity extends JoinedEntityBase
 {
-
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $own;
+    private ?string $own = null;
 }

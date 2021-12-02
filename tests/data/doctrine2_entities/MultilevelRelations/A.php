@@ -12,30 +12,23 @@ use Doctrine\ORM\Mapping as ORM;
 class A
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var Collection|B[]
-     *
      * @ORM\OneToMany(targetEntity="B", mappedBy="a")
      */
-    private $b;
+    private Collection $b;
 
-    /**
-     */
     public function __construct()
     {
         $this->b = new ArrayCollection();
@@ -44,7 +37,7 @@ class A
     /**
      * @return Collection|B[]
      */
-    public function getB()
+    public function getB(): Collection
     {
         return $this->b;
     }

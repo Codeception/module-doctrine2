@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -7,10 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 class NonTypicalPrimaryKeyEntity
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="string")
      */
-    private $primaryKey;
+    private string $primaryKey;
 }

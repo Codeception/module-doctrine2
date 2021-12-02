@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -7,23 +8,18 @@ use Doctrine\ORM\Mapping as ORM;
 class EntityWithEmbeddable
 {
     /**
-     * @var int|null
      *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var SampleEmbeddable
-     *
      * @ORM\Embedded(class="SampleEmbeddable")
      */
-    private $embed;
+    private SampleEmbeddable $embed;
 
-    /**
-     */
     public function __construct()
     {
         $this->embed = new SampleEmbeddable();

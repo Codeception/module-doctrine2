@@ -10,32 +10,23 @@ use Doctrine\ORM\Mapping as ORM;
 class C
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var B
-     *
      * @ORM\ManyToOne(targetEntity="B")
      */
-    private $b;
+    private ?B $b = null;
 
-    /**
-     * @return B
-     */
-    public function getB()
+    public function getB(): ?B
     {
         return $this->b;
     }

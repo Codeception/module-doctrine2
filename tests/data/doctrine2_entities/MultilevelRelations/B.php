@@ -12,46 +12,35 @@ use Doctrine\ORM\Mapping as ORM;
 class B
 {
     /**
-     * @var int|null
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var A
-     *
      * @ORM\ManyToOne(targetEntity="A")
      */
-    private $a;
+    private ?A $a = null;
 
     /**
      * @var Collection|C[]
      *
      * @ORM\OneToMany(targetEntity="C", mappedBy="b")
      */
-    private $c;
+    private Collection $c;
 
-    /**
-     */
     public function __construct()
     {
         $this->c = new ArrayCollection();
     }
 
-    /**
-     * @return A
-     */
-    public function getA()
+    public function getA(): ?A
     {
         return $this->a;
     }
@@ -59,7 +48,7 @@ class B
     /**
      * @return Collection|C[]
      */
-    public function getC()
+    public function getC(): Collection
     {
         return $this->c;
     }
