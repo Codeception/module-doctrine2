@@ -524,9 +524,7 @@ EOF;
         // Pass relations that are already objects to the constructor, too
         $properties = array_merge(
             $scalars,
-            array_filter($relations, function ($relation) {
-                return is_object($relation);
-            })
+            array_filter($relations, fn($relation) => is_object($relation))
         );
         /** @var T $instance */
         $instance = $rpa->createWithProperties($className, $properties);
@@ -1045,11 +1043,9 @@ EOF;
         if ($isEntity) {
             try {
                 $this->em->getClassMetadata(get_class($pk));
-            } catch (\Doctrine\ORM\Mapping\MappingException $exception) {
+            } catch (\Doctrine\ORM\Mapping\MappingException|\Doctrine\Persistence\Mapping\MappingException $exception) {
                 $isEntity = false;
             } catch (\Doctrine\Common\Persistence\Mapping\MappingException $exception) { // @phpstan-ignore-line
-                $isEntity = false;
-            } catch (\Doctrine\Persistence\Mapping\MappingException $exception) {
                 $isEntity = false;
             }
         }

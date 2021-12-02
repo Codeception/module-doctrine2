@@ -15,7 +15,7 @@
     ],
     "minimum-stability": "RC",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4 | ^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
         "codeception/codeception": "^4.0"
@@ -24,9 +24,9 @@
         "doctrine/annotations": "^1",
         "doctrine/data-fixtures": "^1",
         "doctrine/orm": "^2.10",
-        "phpstan/phpstan": "^0.12.93",
+        "phpstan/phpstan": "^0.12",
         "ramsey/uuid-doctrine": "^1.5",
-        "symfony/cache": "^4.4 || ^5.3"
+        "symfony/cache": "^4.4 | ^5.4 | ^6.0"
     },
     "autoload": {
         "classmap": [ "src/" ]
