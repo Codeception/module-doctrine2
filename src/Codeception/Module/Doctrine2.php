@@ -870,7 +870,7 @@ EOF;
         $this->debug($qb->getDQL());
         $res = $qb->getQuery()->getArrayResult();
 
-        return ['True', (count($res) > 0), "$entity with " . json_encode($params, JSON_THROW_ON_ERROR)];
+        return ['True', (count($res) > 0), "$entity with " . $qb->getDQL()];
     }
 
     /**
