@@ -58,7 +58,12 @@ class ReflectionPropertyAccessor
                 }
             }
 
-            $obj = $reflectionClass->newInstance($constructorParameters);
+            // Only provide constructor parameters if the array isn't empty.
+            if (count($constructorParameters) > 0) {
+                $obj = $reflectionClass->newInstance($constructorParameters);
+            } else {
+                $obj = $reflectionClass->newInstance();
+            }
         }
 
         foreach ($reflectionClass->getProperties() as $property) {
