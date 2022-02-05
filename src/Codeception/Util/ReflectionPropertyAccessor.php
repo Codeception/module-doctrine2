@@ -39,11 +39,11 @@ class ReflectionPropertyAccessor
      */
     private function setPropertiesForClass(?object $obj, string $class, array $data): object
     {
-        $reflectionClass = new ReflectionClass($class);
+        $reflectedEntity = new ReflectionClass($class);
 
         if ($obj === null) {
             $constructorParameters = [];
-            $constructor = $reflectionClass->getConstructor();
+            $constructor = $reflectedEntity->getConstructor();
             if (null !== $constructor) {
                 foreach ($constructor->getParameters() as $parameter) {
                     if ($parameter->isOptional()) {
@@ -58,10 +58,10 @@ class ReflectionPropertyAccessor
                 }
             }
 
-            $obj = $reflectionClass->newInstance($constructorParameters);
+            $obj = $reflectedEntity->newInstance(...$constructorParameters);
         }
 
-        foreach ($reflectionClass->getProperties() as $property) {
+        foreach ($reflectedEntity->getProperties() as $property) {
             if (isset($data[$property->name])) {
                 $property->setAccessible(true);
                 $property->setValue($obj, $data[$property->name]);
