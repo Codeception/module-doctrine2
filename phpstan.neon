@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-  level: 6
+  level: 3
   paths:
     - src
     - tests
@@ -10,6 +10,7 @@ parameters:
     analyse:
         - tests/data/doctrine2_fixtures/TestFixture1.php
         - tests/data/doctrine2_fixtures/TestFixture2.php
+        - tests/_support/UnitTester.php
   checkMissingIterableValueType: false
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:

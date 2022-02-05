@@ -11,9 +11,9 @@ use Codeception\Lib\Interfaces\DataMapper;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Lib\Interfaces\DoctrineProvider;
 use Codeception\Module as CodeceptionModule;
+use Codeception\Stub;
 use Codeception\TestInterface;
 use Codeception\Util\ReflectionPropertyAccessor;
-use Codeception\Util\Stub;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
@@ -168,7 +168,7 @@ EOF;
 
     public ?EntityManagerInterface $em = null;
 
-    public function _depends()
+    public function _depends(): array
     {
         if ($this->config['connection_callback']) {
             return [];
@@ -177,26 +177,17 @@ EOF;
         return [DoctrineProvider::class => $this->dependencyMessage];
     }
 
-    /**
-     * @return void
-     */
-    public function _inject(DoctrineProvider $dependentModule = null)
+    public function _inject(DoctrineProvider $dependentModule = null): void
     {
         $this->dependentModule = $dependentModule;
     }
 
-    /**
-     * @return void
-     */
-    public function _beforeSuite($settings = [])
+    public function _beforeSuite($settings = []): void
     {
         $this->retrieveEntityManager();
     }
 
-    /**
-     * @return void
-     */
-    public function _before(TestInterface $test)
+    public function _before(TestInterface $test): void
     {
         $this->cleanupEntityManager();
     }
@@ -836,7 +827,7 @@ EOF;
      * @param array $params
      * @return void
      */
-    public function seeInRepository($entity, $params = [])
+    public function seeInRepository(string $entity, array $params = []): void
     {
         $res = $this->proceedSeeInRepository($entity, $params);
         $this->assert($res);
@@ -849,7 +840,7 @@ EOF;
      * @param array $params
      * @return void
      */
-    public function dontSeeInRepository($entity, $params = [])
+    public function dontSeeInRepository(string $entity, array $params = []): void
     {
         $res = $this->proceedSeeInRepository($entity, $params);
         $this->assertNot($res);
@@ -891,7 +882,7 @@ EOF;
      * @param array $params
      * @return mixed
      */
-    public function grabFromRepository($entity, $field, $params = [])
+    public function grabFromRepository(string $entity, string $field, array $params = [])
     {
         // we need to store to database...
         $this->em->flush();
@@ -995,11 +986,7 @@ EOF;
         }
     }
 
-    /**
-     * @return \Doctrine\ORM\EntityManagerInterface
-     * @throws ModuleConfigException
-     */
-    public function _getEntityManager()
+    public function _getEntityManager(): EntityManagerInterface
     {
         if (is_null($this->em)) {
             $this->retrieveEntityManager();
