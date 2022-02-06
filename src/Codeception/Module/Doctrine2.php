@@ -142,8 +142,7 @@ class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 
     private ?DoctrineProvider $dependentModule = null;
 
-    /** @var array */
-    protected $config = [
+    protected array $config = [
         'cleanup' => true,
         'connection_callback' => false,
         'depends' => null,
