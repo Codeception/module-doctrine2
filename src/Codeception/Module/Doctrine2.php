@@ -182,6 +182,11 @@ EOF;
         $this->dependentModule = $dependentModule;
     }
 
+    /**
+     * @param array<mixed> $settings
+     *
+     * @throws ModuleConfigException
+     */
     public function _beforeSuite($settings = []): void
     {
         $this->retrieveEntityManager();
@@ -704,8 +709,8 @@ EOF;
                 }
 
                 try {
-                    $fixtureInstance = new $fixture;
-                } catch (Exception $exception) {
+                    $fixtureInstance = new $fixture();
+                } catch (Exception $exception) { // @phpstan-ignore-line https://github.com/phpstan/phpstan/issues/6574
                     throw new ModuleException(
                         __CLASS__,
                         sprintf(
