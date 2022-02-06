@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-  level: 3
+  level: 6
   paths:
     - src
     - tests
@@ -15,8 +15,12 @@ parameters:
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
       - path: tests/
-        message: '#no typehint specified#'
+        message: '#Property \S+ is never read, only written#'
       - path: tests/
-        message: '#no return typehint specified#'
+        message: '#Property \S+ is unused#'
       - path: tests/
-        message: '#does not specify its types#'
+        message: '#Method \S+ has parameter \S+ with no type specified#'
+      - path: tests/
+        message: '#Method \S+ has no return type specified#'
+      - path: tests/
+        message: '#(?:Method|Property) .+ with generic (?:interface|class) \S+ does not specify its types#'
