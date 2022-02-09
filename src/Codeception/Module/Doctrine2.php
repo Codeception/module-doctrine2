@@ -138,9 +138,11 @@ use function var_export;
  */
 class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 {
-
     private ?DoctrineProvider $dependentModule = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $config = [
         'cleanup' => true,
         'connection_callback' => false,
