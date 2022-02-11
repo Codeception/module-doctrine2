@@ -1008,7 +1008,7 @@ EOF;
         $message = get_class($instance) . ' entity created with ';
 
         if (!is_array($pks)) {
-            $pks     = [$pks];
+            $pks = [$pks];
             $message .= 'primary key ';
         } else {
             $message .= 'composite primary key of ';
@@ -1025,10 +1025,7 @@ EOF;
         $this->debug(trim($message, ' ,'));
     }
 
-    /**
-     * @param mixed $pk
-     */
-    private function isDoctrineEntity($pk): bool
+    private function isDoctrineEntity(mixed $pk): bool
     {
         $isEntity = is_object($pk);
 
