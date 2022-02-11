@@ -910,7 +910,7 @@ EOF;
      * $users = $I->grabEntitiesFromRepository(User::class, ['name' => 'davert']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
      * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return list<T>
@@ -940,7 +940,7 @@ EOF;
      * $user = $I->grabEntityFromRepository(User::class, ['id' => '1234']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
      * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return T
