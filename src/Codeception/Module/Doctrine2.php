@@ -138,9 +138,11 @@ use function var_export;
  */
 class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 {
-
     private ?DoctrineProvider $dependentModule = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $config = [
         'cleanup' => true,
         'connection_callback' => false,
@@ -908,7 +910,7 @@ EOF;
      * $users = $I->grabEntitiesFromRepository(User::class, ['name' => 'davert']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
      * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return list<T>
@@ -938,7 +940,7 @@ EOF;
      * $user = $I->grabEntityFromRepository(User::class, ['id' => '1234']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
      * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return T
@@ -1006,7 +1008,7 @@ EOF;
         $message = get_class($instance) . ' entity created with ';
 
         if (!is_array($pks)) {
-            $pks     = [$pks];
+            $pks = [$pks];
             $message .= 'primary key ';
         } else {
             $message .= 'composite primary key of ';
@@ -1023,10 +1025,7 @@ EOF;
         $this->debug(trim($message, ' ,'));
     }
 
-    /**
-     * @param mixed $pk
-     */
-    private function isDoctrineEntity($pk): bool
+    private function isDoctrineEntity(mixed $pk): bool
     {
         $isEntity = is_object($pk);
 

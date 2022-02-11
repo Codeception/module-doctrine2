@@ -1,24 +1,26 @@
 {
     "name": "codeception/module-doctrine2",
     "description": "Doctrine2 module for Codeception",
-    "keywords": [ "codeception", "doctrine2" ],
-    "homepage": "https://codeception.com/",
-    "type": "library",
     "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "codeception",
+        "doctrine2"
+    ],
     "authors": [
         {
-            "name":"Michael Bodnarchuk"
+            "name": "Michael Bodnarchuk"
         },
         {
-            "name":"Alex Kunin"
+            "name": "Alex Kunin"
         }
     ],
-    "minimum-stability": "dev",
+    "homepage": "https://codeception.com/",
     "require": {
         "php": "^8.0",
-        "ext-pdo": "*",
         "ext-json": "*",
-        "codeception/codeception": "dev-5.0-interfaces as 5.0.x-dev"
+        "ext-pdo": "*",
+        "codeception/codeception": "dev-5.0-interfaces as 5.0.0"
     },
     "require-dev": {
         "codeception/stub": "^4.0",
@@ -27,10 +29,16 @@
         "doctrine/orm": "^2.10",
         "phpstan/phpstan": "^1.0",
         "ramsey/uuid-doctrine": "^1.6",
-        "symfony/cache": "^4.4 | ^5.4 | ^6.0"
+        "symfony/cache": "^4.4 || ^5.4 || ^6.0"
     },
+    "conflict": {
+        "codeception/codeception": "<5.0"
+    },
+    "minimum-stability": "dev",
     "autoload": {
-        "classmap": [ "src/" ]
+        "classmap": [
+            "src/"
+        ]
     },
     "config": {
         "classmap-authoritative": true,
