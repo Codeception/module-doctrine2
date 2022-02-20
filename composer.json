@@ -20,7 +20,7 @@
         "php": "^8.0",
         "ext-json": "*",
         "ext-pdo": "*",
-        "codeception/codeception": "dev-5.0-interfaces as 5.0.0"
+        "codeception/codeception": "^5.0.0-alpha2"
     },
     "require-dev": {
         "codeception/stub": "^4.0",
