@@ -16,10 +16,9 @@ use function is_object;
 class ReflectionPropertyAccessor
 {
     /**
-     * @return mixed
      * @throws ReflectionException
      */
-    public function getProperty(object $obj, string $field)
+    public function getProperty(object $obj, string $field): mixed
     {
         $class = get_class($obj);
         do {
@@ -52,7 +51,7 @@ class ReflectionPropertyAccessor
                         $constructorParameters[] = $data[$parameter->getName()];
                     } else {
                         throw new InvalidArgumentException(
-                            'Constructor parameter "'.$parameter->getName().'" missing'
+                            'Constructor parameter "' . $parameter->getName() . '" missing'
                         );
                     }
                 }

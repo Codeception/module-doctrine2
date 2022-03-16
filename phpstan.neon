@@ -1,6 +1,3 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
   level: 6
   paths:
@@ -12,7 +9,7 @@ parameters:
         - tests/data/doctrine2_fixtures/TestFixture2.php
         - tests/_support/UnitTester.php
   checkMissingIterableValueType: false
-  reportUnmatchedIgnoredErrors: false
+  reportUnmatchedIgnoredErrors: true
   ignoreErrors:
       - path: tests/
         message: '#Property \S+ is never read, only written#'

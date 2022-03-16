@@ -136,14 +136,14 @@ use function var_export;
  *
  * Note that key is ignored, because actual field name is part of criteria and/or expression.
  */
-
 class Doctrine2 extends CodeceptionModule implements DependsOnModule, DataMapper
 {
-
     private ?DoctrineProvider $dependentModule = null;
 
-    /** @var array */
-    protected $config = [
+    /**
+     * @var array<string, mixed>
+     */
+    protected array $config = [
         'cleanup' => true,
         'connection_callback' => false,
         'depends' => null,
@@ -516,7 +516,7 @@ EOF;
     private function instantiateAndPopulateEntity(string $className, array $data, array &$instances)
     {
         $rpa = new ReflectionPropertyAccessor();
-        [$scalars,$relations] = $this->splitScalarsAndRelations($className, $data);
+        [$scalars, $relations] = $this->splitScalarsAndRelations($className, $data);
         // Pass relations that are already objects to the constructor, too
         $properties = array_merge(
             $scalars,
@@ -881,11 +881,11 @@ EOF;
      * $email = $I->grabFromRepository(User::class, 'email', ['name' => 'davert']);
      * ```
      *
-     * @version 1.1
      * @param class-string $entity
      * @param string $field
      * @param array $params
      * @return mixed
+     * @version 1.1
      */
     public function grabFromRepository(string $entity, string $field, array $params = [])
     {
@@ -910,9 +910,9 @@ EOF;
      * $users = $I->grabEntitiesFromRepository(User::class, ['name' => 'davert']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
-     * @param array $params. For `IS NULL`, use `['field' => null]`
+     * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return list<T>
      * @version 1.1
      */
@@ -940,9 +940,9 @@ EOF;
      * $user = $I->grabEntityFromRepository(User::class, ['id' => '1234']);
      * ```
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $entity
-     * @param array $params. For `IS NULL`, use `['field' => null]`
+     * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return T
      * @version 1.1
      */
@@ -1005,10 +1005,10 @@ EOF;
      */
     private function debugEntityCreation(object $instance, $pks): void
     {
-        $message = get_class($instance).' entity created with ';
+        $message = get_class($instance) . ' entity created with ';
 
         if (!is_array($pks)) {
-            $pks     = [$pks];
+            $pks = [$pks];
             $message .= 'primary key ';
         } else {
             $message .= 'composite primary key of ';
@@ -1016,19 +1016,16 @@ EOF;
 
         foreach ($pks as $pk) {
             if ($this->isDoctrineEntity($pk)) {
-                $message .= get_class($pk).': '.var_export($this->extractPrimaryKey($pk), true).', ';
+                $message .= get_class($pk) . ': ' . var_export($this->extractPrimaryKey($pk), true) . ', ';
             } else {
-                $message .= var_export($pk, true).', ';
+                $message .= var_export($pk, true) . ', ';
             }
         }
 
         $this->debug(trim($message, ' ,'));
     }
 
-    /**
-     * @param mixed $pk
-     */
-    private function isDoctrineEntity($pk): bool
+    private function isDoctrineEntity(mixed $pk): bool
     {
         $isEntity = is_object($pk);
 
