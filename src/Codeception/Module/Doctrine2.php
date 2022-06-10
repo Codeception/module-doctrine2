@@ -971,8 +971,8 @@ EOF;
             if ($data->associationMappings !== null && array_key_exists($key, $data->associationMappings)) {
                 $map = $data->associationMappings[$key];
                 if (is_array($val)) {
-                    $qb->innerJoin("$alias.$key", "${alias}__$key");
-                    $this->_buildAssociationQuery($qb, $map['targetEntity'], "${alias}__$key", $val, $paramIndex);
+                    $qb->innerJoin("$alias.$key", "{$alias}__$key");
+                    $this->_buildAssociationQuery($qb, $map['targetEntity'], "{$alias}__$key", $val, $paramIndex);
                     continue;
                 }
             }
