@@ -88,6 +88,24 @@ use function var_export;
  *             purge_mode: 1 # 1: DELETE (=default), 2: TRUNCATE
  * ```
  *
+ * ## Grabbing Entities with Symfony
+ *
+ * For Symfony users, the recommended way to query for entities is not to use this module's `grab...()` methods, but rather
+ * "inject" Doctrine's repository:
+ *
+ * ```php
+ * public function _before(FunctionalTester $I): void
+ * {
+ *     $this->fooRepository = $I->grabService(FooRepository::class);
+ * }
+ * ```
+ *
+ * Now you have access to all your familiar repository methods in your tests, e.g.:
+ *
+ * ```php
+ * $greenFoo = $this->fooRepository->findOneBy(['color' => 'green']);
+ * ```
+ *
  * ## Status
  *
  * * Maintainer: **davert**
