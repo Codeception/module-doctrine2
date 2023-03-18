@@ -38,7 +38,7 @@ use function sprintf;
 use function var_export;
 
 /**
- * Access the database using [Doctrine2 ORM](https://docs.doctrine-project.org/projects/doctrine-orm/en/latest/).
+ * Access the database using [Doctrine ORM](https://docs.doctrine-project.org/projects/doctrine-orm/en/latest/).
  *
  * When used with Symfony or Zend Framework 2, Doctrine's Entity Manager is automatically retrieved from Service Locator.
  * Set up your `functional.suite.yml` like this:
@@ -88,23 +88,15 @@ use function var_export;
  *             purge_mode: 1 # 1: DELETE (=default), 2: TRUNCATE
  * ```
  *
- * ## Status
- *
- * * Maintainer: **davert**
- * * Stability: **stable**
- * * Contact: codecept@davert.mail.ua
- *
- * ## Config
- *
  * ## Public Properties
  *
  * * `em` - Entity Manager
  *
- * ## Note on parameters
+ * ## Doctrine `Criteria` as query parameters
  *
- * Every method that expects some parameters to be checked against values in the database (`see...()`,
- * `dontSee...()`, `grab...()`) can accept instance of
- * [\Doctrine\Common\Collections\Criteria](https://www.doctrine-project.org/api/collections/latest/Doctrine/Common/Collections/Criteria.html)
+ * Every method that expects some query parameters (`see...()`,
+ * `dontSee...()`, `grab...()`) also accepts an instance of
+ * [\Doctrine\Common\Collections\Criteria](https://www.doctrine-project.org/projects/doctrine-collections/en/stable/expressions.html)
  * for more flexibility, e.g.:
  *
  * ```php
@@ -885,7 +877,6 @@ EOF;
      * @param string $field
      * @param array $params
      * @return mixed
-     * @version 1.1
      */
     public function grabFromRepository(string $entity, string $field, array $params = [])
     {
@@ -914,7 +905,6 @@ EOF;
      * @param class-string<T> $entity
      * @param array $params . For `IS NULL`, use `['field' => null]`
      * @return list<T>
-     * @version 1.1
      */
     public function grabEntitiesFromRepository(string $entity, array $params = []): array
     {
