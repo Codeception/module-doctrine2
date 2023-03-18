@@ -881,8 +881,9 @@ EOF;
 
     /**
      * Selects field value from repository.
-     * It builds query based on array of parameters.
+     * It builds a query based on an array of parameters.
      * You can use entity associations to build complex queries.
+     * For Symfony users, it's recommended to [use the entity's repository instead](#Grabbing-Entities-with-Symfony)
      *
      * Example:
      *
@@ -909,8 +910,9 @@ EOF;
 
     /**
      * Selects entities from repository.
-     * It builds query based on array of parameters.
+     * It builds a query based on an array of parameters.
      * You can use entity associations to build complex queries.
+     * For Symfony users, it's recommended to [use the entity's repository instead](#Grabbing-Entities-with-Symfony)
      *
      * Example:
      *
@@ -938,8 +940,9 @@ EOF;
 
     /**
      * Selects a single entity from repository.
-     * It builds query based on array of parameters.
+     * It builds a query based on an array of parameters.
      * You can use entity associations to build complex queries.
+     * For Symfony users, it's recommended to [use the entity's repository instead](#Grabbing-Entities-with-Symfony)
      *
      * Example:
      *
