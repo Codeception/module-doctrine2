@@ -257,7 +257,7 @@ EOF;
             );
         }
 
-        $this->em->getConnection()->connect();
+        $this->em->getConnection()->getNativeConnection();
     }
 
     /**
