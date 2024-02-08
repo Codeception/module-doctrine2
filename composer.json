@@ -28,7 +28,7 @@
         "doctrine/orm": "^2.14",
         "phpstan/phpstan": "^1.0",
         "ramsey/uuid-doctrine": "^2.0",
-        "symfony/cache": "^4.4 || ^5.4 || ^6.0"
+        "symfony/cache": "^4.4 || ^5.4 || ^6.0 || ^7.0"
     },
     "conflict": {
         "codeception/codeception": "<5.0"
