@@ -13,6 +13,7 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
@@ -71,8 +72,9 @@ final class Doctrine2Test extends Unit
         require_once $dir . "/CircularRelations/C.php";
         require_once $dir . '/EntityWithUuid.php';
 
+        $dsnParser = new DsnParser();
         $this->em = new EntityManager(
-            DriverManager::getConnection(['url' => 'sqlite:///:memory:']),
+            DriverManager::getConnection($dsnParser->parse('sqlite3:///:memory:')),
             ORMSetup::createAttributeMetadataConfiguration([$dir], true)
         );
 
@@ -438,7 +440,7 @@ final class Doctrine2Test extends Unit
         $this->assertSame($original, $this->module->grabEntityFromRepository(PlainEntity::class, ['id' => $id]));
 
         // Here comes external change:
-        $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ? WHERE id = ?', ['b', $id]);
+        $this->em->getConnection()->executeStatement('UPDATE PlainEntity SET name = ? WHERE id = ?', ['b', $id]);
 
         // Our original entity still has old data:
         $this->assertSame('a', $original->getName());
@@ -468,7 +470,7 @@ final class Doctrine2Test extends Unit
         $b = new PlainEntity;
         $this->module->haveInRepository($b, ['name' => 'b']);
 
-        $this->em->getConnection()->executeUpdate('UPDATE PlainEntity SET name = ?', ['c']);
+        $this->em->getConnection()->executeStatement('UPDATE PlainEntity SET name = ?', ['c']);
 
         $this->assertSame('a', $a->getName());
         $this->assertSame('b', $b->getName());
