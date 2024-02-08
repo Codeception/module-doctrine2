@@ -13,7 +13,6 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
@@ -72,9 +71,8 @@ final class Doctrine2Test extends Unit
         require_once $dir . "/CircularRelations/C.php";
         require_once $dir . '/EntityWithUuid.php';
 
-        $dsnParser = new DsnParser();
         $this->em = new EntityManager(
-            DriverManager::getConnection($dsnParser->parse('sqlite3:///:memory:')),
+            DriverManager::getConnection(['driver' => 'sqlite3', 'memory' => true]),
             ORMSetup::createAttributeMetadataConfiguration([$dir], true)
         );
 
