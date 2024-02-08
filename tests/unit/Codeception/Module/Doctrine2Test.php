@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Composer\InstalledVersions;
 use Codeception\Exception\ModuleException;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module\Doctrine2;
@@ -564,6 +565,10 @@ final class Doctrine2Test extends Unit
 
     public function testHaveFakeRepository()
     {
+        if (version_compare(InstalledVersions::getVersion('doctrine/orm'), '3', '>=')) {
+            $this->markTestSkipped('haveFakeRepository() is not supported for doctrine/orm:3 or higher');
+        }
+
         $e1 = new PlainEntity();
         $e2 = new PlainEntity();
         $this->module->haveFakeRepository(PlainEntity::class, [

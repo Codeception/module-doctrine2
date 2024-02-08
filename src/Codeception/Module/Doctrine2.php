@@ -401,7 +401,15 @@ EOF;
 
             $reflectedRepositoryFactory = new ReflectionClass($repositoryFactory);
 
-            if ($reflectedRepositoryFactory->hasProperty('repositoryList')) {
+            // Do not call $reflectedRepositoryFactory->isReadOnly() directly because
+            // phpstan will complain about a non-existing method when using PHP 8.0.
+            // isReadOnly() is available as-of PHP 8.1.
+            if ($reflectedRepositoryFactory->hasMethod('isReadOnly') && $reflectedRepositoryFactory->getMethod('isReadOnly')->invoke(null)) {
+                $this->debugSection(
+                    'Warning',
+                    'Repository can\'t be mocked, the EntityManager\'s repositoryFactory is readonly'
+                );
+            } elseif ($reflectedRepositoryFactory->hasProperty('repositoryList')) {
                 $repositoryListProperty = $reflectedRepositoryFactory->getProperty('repositoryList');
                 $repositoryListProperty->setAccessible(true);
 
@@ -415,13 +423,13 @@ EOF;
             } else {
                 $this->debugSection(
                     'Warning',
-                    'Repository can\'t be mocked, the EventManager\'s repositoryFactory doesn\'t have "repositoryList" property'
+                    'Repository can\'t be mocked, the EntityManager\'s repositoryFactory doesn\'t have "repositoryList" property'
                 );
             }
         } else {
             $this->debugSection(
                 'Warning',
-                'Repository can\'t be mocked, the EventManager class doesn\'t have "repositoryFactory" or "repositories" property'
+                'Repository can\'t be mocked, the EntityManager class doesn\'t have "repositoryFactory" or "repositories" property'
             );
         }
     }
