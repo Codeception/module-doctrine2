@@ -25,8 +25,8 @@ use QuirkyFieldName\Association;
 use QuirkyFieldName\AssociationHost;
 use QuirkyFieldName\Embeddable;
 use QuirkyFieldName\EmbeddableHost;
-use Ramsey\Uuid\Doctrine\UuidType;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 final class Doctrine2Test extends Unit
 {
@@ -418,13 +418,13 @@ final class Doctrine2Test extends Unit
 
     /**
      * The purpose of this test is to verify that entites with object @id, that are
-     * not entites itself, e.g. Ramsey\Uuid\UuidInterface, don't break the debug message.
+     * not entites itself, e.g. Symfony\Component\Uid\Uuid, don't break the debug message.
      */
     public function testDebugEntityWithNonEntityButObjectId()
     {
         $pk = $this->module->haveInRepository(EntityWithUuid::class);
 
-        self::assertInstanceOf(UuidInterface::class, $pk);
+        self::assertInstanceOf(Uuid::class, $pk);
     }
 
     public function testRefresh()

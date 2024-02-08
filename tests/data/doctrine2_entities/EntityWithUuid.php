@@ -1,9 +1,8 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 class EntityWithUuid
@@ -12,14 +11,14 @@ class EntityWithUuid
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    private ?Uuid $id = null;
 
     public function __construct()
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::v4();
     }
 
-    public function getId(): UuidInterface
+    public function getId(): Uuid
     {
         return $this->id;
     }
