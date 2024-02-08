@@ -24,11 +24,10 @@
     },
     "require-dev": {
         "codeception/stub": "^4.0",
-        "doctrine/annotations": "^1.13",
         "doctrine/data-fixtures": "^1.5",
-        "doctrine/orm": "^2.10",
+        "doctrine/orm": "^2.14",
         "phpstan/phpstan": "^1.0",
-        "ramsey/uuid-doctrine": "^1.6",
+        "ramsey/uuid-doctrine": "^2.0",
         "symfony/cache": "^4.4 || ^5.4 || ^6.0"
     },
     "conflict": {

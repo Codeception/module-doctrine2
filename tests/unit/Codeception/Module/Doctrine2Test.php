@@ -11,11 +11,12 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Setup;
 use MultilevelRelations\A;
 use MultilevelRelations\B;
 use MultilevelRelations\C;
@@ -48,10 +49,6 @@ final class Doctrine2Test extends Unit
             $this->markTestSkipped('doctrine/orm is not installed');
         }
 
-        if (!class_exists(Doctrine\Common\Annotations\Annotation::class)) {
-            $this->markTestSkipped('doctrine/annotations is not installed');
-        }
-
         $dir = __DIR__ . "/../../../data/doctrine2_entities";
 
         require_once $dir . "/CompositePrimaryKeyEntity.php";
@@ -73,10 +70,9 @@ final class Doctrine2Test extends Unit
         require_once $dir . "/CircularRelations/C.php";
         require_once $dir . '/EntityWithUuid.php';
 
-
-        $this->em = EntityManager::create(
-            ['url' => 'sqlite:///:memory:'],
-            Setup::createAnnotationMetadataConfiguration([$dir], true, null, null, false)
+        $this->em = new EntityManager(
+            DriverManager::getConnection(['url' => 'sqlite:///:memory:']),
+            ORMSetup::createAttributeMetadataConfiguration([$dir], true)
         );
 
         (new SchemaTool($this->em))->createSchema([

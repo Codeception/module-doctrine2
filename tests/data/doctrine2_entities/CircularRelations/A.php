@@ -6,23 +6,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="circular_a")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'circular_a')]
 class A
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
     private ?int $id = null;
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="C", mappedBy="a")
      */
+    #[ORM\OneToMany(targetEntity: C::class, mappedBy: 'a')]
     private Collection $cs;
 
     public function __construct()
