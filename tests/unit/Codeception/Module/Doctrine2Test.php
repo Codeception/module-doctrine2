@@ -71,10 +71,20 @@ final class Doctrine2Test extends Unit
         require_once $dir . "/CircularRelations/C.php";
         require_once $dir . '/EntityWithUuid.php';
 
-        $this->em = new EntityManager(
-            DriverManager::getConnection(['driver' => 'sqlite3', 'memory' => true]),
-            ORMSetup::createAttributeMetadataConfiguration([$dir], true)
-        );
+        $connection = DriverManager::getConnection(['driver' => 'sqlite3', 'memory' => true]);
+        
+        if (version_compare(InstalledVersions::getVersion('doctrine/orm'), '3', '>=')) {
+            $this->em = new EntityManager(
+                $connection,
+                ORMSetup::createAttributeMetadataConfiguration([$dir], true)
+            );
+        } else {
+            $this->em = new EntityManager(
+                $connection,
+                // @phpstan-ignore-next-line
+                ORMSetup::createAnnotationMetadataConfiguration([$dir], true)
+            );
+        }
 
         (new SchemaTool($this->em))->createSchema([
             $this->em->getClassMetadata(CompositePrimaryKeyEntity::class),

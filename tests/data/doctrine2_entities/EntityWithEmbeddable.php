@@ -2,14 +2,26 @@
 
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity
+ */
 #[ORM\Entity]
 class EntityWithEmbeddable
 {
+    /**
+     *
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
     private int $id;
 
+    /**
+     * @ORM\Embedded(class="SampleEmbeddable")
+     */
     #[ORM\Embedded(class: SampleEmbeddable::class)]
     private SampleEmbeddable $embed;
 
