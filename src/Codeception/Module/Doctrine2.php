@@ -401,10 +401,7 @@ EOF;
 
             $reflectedRepositoryFactory = new ReflectionClass($repositoryFactory);
 
-            // Do not call $reflectedRepositoryFactory->isReadOnly() directly because
-            // phpstan will complain about a non-existing method when using PHP 8.0.
-            // isReadOnly() is available as-of PHP 8.1.
-            if ($reflectedRepositoryFactory->hasMethod('isReadOnly') && $reflectedRepositoryFactory->getMethod('isReadOnly')->invoke(null)) {
+            if ($repositoryFactoryProperty->isReadOnly()) {
                 $this->debugSection(
                     'Warning',
                     'Repository can\'t be mocked, the EntityManager\'s repositoryFactory is readonly'

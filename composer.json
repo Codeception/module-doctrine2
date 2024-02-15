@@ -17,7 +17,7 @@
     ],
     "homepage": "https://codeception.com/",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "ext-pdo": "*",
         "codeception/codeception": "^5.0.0-alpha2"
