@@ -32,4 +32,6 @@ jobs:
       run: php vendor/bin/codecept run
 
     - name: Run source code analysis
+      if: "${{ matrix.composer_flags == '' }}"
       run: php vendor/bin/phpstan
+      
