@@ -7,6 +7,10 @@ A Doctrine 2 module for Codeception.
 [![Total Downloads](https://poser.pugx.org/codeception/module-doctrine2/downloads)](https://packagist.org/packages/codeception/module-doctrine2)
 [![License](https://poser.pugx.org/codeception/module-doctrine2/license)](/LICENSE)
 
+## This repository is discontinued ...
+
+... in favor of https://github.com/Codeception/module-doctrine
+
 ## Requirements
 
 * `PHP 8.0` or higher.
