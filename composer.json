@@ -1,4 +1,5 @@
 {
+    "abandoned": "codeception/module-doctrine",
     "name": "codeception/module-doctrine2",
     "description": "Doctrine2 module for Codeception",
     "license": "MIT",
